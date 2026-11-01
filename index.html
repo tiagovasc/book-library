@@ -1093,7 +1093,7 @@ var SEED = [{"id":"1","title":"\"Surely You're Joking, Mr. Feynman!\": Adventure
     var h=main.offsetHeight+row2.offsetHeight+24;
     document.documentElement.style.setProperty("--notch-h",h+"px");
     // Browsing columns share the logo-to-view-switch span of the header.
-    var left=$("libTitle").getBoundingClientRect().left, right=$("viewSwitch").getBoundingClientRect().right;
+    var left=notch.querySelector(".brand .mark").getBoundingClientRect().left, right=$("viewSwitch").getBoundingClientRect().right;
     document.documentElement.style.setProperty("--books-left",left+"px");
     document.documentElement.style.setProperty("--books-width",Math.max(0,right-left)+"px");
   }
