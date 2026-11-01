@@ -29,6 +29,10 @@ New fields: `acquisition_order` (lower is newer; relative ordering key, not a da
 
 Nine missing purchases were added as owned/unread without changing existing statuses. Sourced author/publication metadata and five verified front covers were added to these nine only. Catalogue edition metadata is identified separately from an unconfirmed owned edition. Google Books returned quota errors in this pass. Reject the retrieved Jung preface page, Segall website portrait and Morimoto social banner; the latter was replaced with the actual publisher front cover. Four of these new records still lack a verified cover. See `_build/hosted_library_20261101/ACQUISITION_ORDER_REPORT.md`, `acquisition-current-checkpoint.json` and `acquisition-new-metadata-checkpoint.json` for exact transactions, unresolved ordering, sources and recovery.
 
+### Ownership confirmation — later 1 November 2026
+
+The user confirmed ownership of both Vinland Saga Omnibus volumes 10 and 11 (IDs 944/945). Their two `owned` flags are now true; the earlier pending-ownership statement above is historical. All 246 unread entries are now marked owned. Reading status, acquisition ordering, ratings and all other fields are unchanged. Hosted revision 11→12; exact readback and local JSON/CSV/embedded snapshots verified. Receipt: `_build/hosted_library_20261101/vinland-owned-confirmation.json`.
+
 ## Current duplicate cleanup
 
 The whole library, across every status, was checked. **49 confirmed same-work groups consolidated 53 extra records: 1,033 → 980 visible records.** This includes all 11 pairs previously identified in the read-only audit, plus unread and cross-status duplicates such as *The Disappearance of Rituals*, *Religion: Vintage Minis*, *What Is Metaphysics?* and *Vita Contemplativa*.
