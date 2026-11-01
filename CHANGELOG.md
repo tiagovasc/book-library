@@ -70,6 +70,8 @@ Evidence: [initial cleanup](_build/hosted_library_20261101/DEDUPLICATION_REPORT.
 
 ## Remaining work and standing verification
 
+**Documentation follow-up, 1 November 2026:** added [METADATA_SOP.md](METADATA_SOP.md) for future agents: source/export matching, catalogue/JEV inputs, frozen confidence sampling, native Goodreads fallback, field-specific evidence, duplicate triple-checking, safe apply/readback/recovery, and a problem→solution table. Linked it from the guide, README and enrichment history. Documentation only; library data unchanged.
+
 There are **23 missing covers** at the latest checkpoint. Identity/physical-library checks remain for genuinely vague entries, including the generic Bible, uncertain Mysticism, author-only Han/Pessoa/Hearn entries, Prayer Book, World Religions, Nietzsche volume, “What’s the difference?” and the uncertain Oxford ethics handbook. Do not re-ask already answered cases; consult the latest receipts before the older checklist. Unknown acquisition order remains explicitly unknown rather than fabricated.
 
 For future enrichment, supply raw source metadata to JEV, audit the lowest-confidence 10% plus high-confidence samples and exceptions, and reject interior pages/wrong works. For duplicates, algorithms only shortlist; manually triple-check before merging. Preserve originals and exact deltas, fetch fresh hosted state, compare revisions and verify exports/readback. This documentation consolidation changes no books or ratings.

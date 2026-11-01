@@ -68,6 +68,8 @@ A generic **The Bible** entry and the uncertain **Mysticism: An Introduction** i
 
 ## Covers and missing metadata
 
+Start future enrichment with [METADATA_SOP.md](METADATA_SOP.md): source lookup, raw-reference JEV matching, manual audit, Goodreads fallback, edition safeguards, duplicate review, safe application, verification and known failure fixes. Added 1 November 2026; use campaign receipts for historical evidence, not as scripts to replay blindly.
+
 **User preference: when several covers correctly match the book, choose the one that looks best and/or most modern.** Prefer a clean, attractive, readable design and a sharp image; avoid scan borders, ebook banners, placeholders and interior title pages. When the design is the same, prefer higher resolution. Preserve source provenance and the original files. This preference does not permit using an attractive cover from a different book, author or volume. An exact physical edition is not required solely for its artwork when a correct same-work cover is suitable; preserve edition metadata separately.
 
 The duplicate cleanup visually compared the cover alternatives and applied this preference, including modern/cleaner choices for *Exodus*, *The Need for Roots*, *A Short History of Ethics* and *Plotinus*. `cover_selection` records the chosen source record and rule.
