@@ -15,7 +15,7 @@ Current decisions and operating rules, consolidated 1 November 2026. Earlier REA
 
 ## Unread acquisition order — 1 November 2026
 
-Unread means owned but not yet read. Selecting **Unread** defaults to **Recently acquired**, newest first; the sort menu also offers oldest first. Leaving Unread returns to reading-date order. Explicit title/author and other sorts remain available. Acquisition ordering never overwrites reading dates, publication dates, ratings or reading status.
+Unread normally means owned but not yet read. Selecting **Unread** defaults to **Recently acquired**, newest first; the sort menu also offers oldest first. Leaving Unread returns to reading-date order. Explicit title/author and other sorts remain available. Acquisition ordering never overwrites reading dates, publication dates, ratings or reading status. Two existing exceptions, Vinland Saga Omnibus volumes 10/11, remain flagged unowned pending confirmation rather than silently changing ownership.
 
 Current state after importing nine purchases absent from the library: **989 records; 246 unread; 966 covers / 23 missing**. Of the unread records, 114 use the purchase log, two use the user's recent-purchase clarification, 92 use Goodreads Date Added as an ordering proxy, and 38 have no reliable acquisition-order evidence. Unknown order is grouped last and uses a stable title tie-break, not an invented chronology.
 
