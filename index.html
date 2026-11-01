@@ -559,6 +559,7 @@ var SEED = [{"id":"1","title":"\"Surely You're Joking, Mr. Feynman!\": Adventure
   function esc(s){return (s==null?"":String(s)).replace(/[&<>"]/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;"}[c];});}
   function uid(){return "b"+Date.now().toString(36)+Math.random().toString(36).slice(2,6);}
   function num(v){var n=parseInt(v,10);return isNaN(n)?null:n;}
+  var originalBooks=new WeakMap();
   function normalize(b){
     b=b||{};
     var out={
@@ -579,6 +580,7 @@ var SEED = [{"id":"1","title":"\"Surely You're Joking, Mr. Feynman!\": Adventure
     };
     // Keep any field this page does not know about, so saving never drops data a newer pipeline added.
     for(var k in b){ if(has.call(b,k) && !has.call(out,k) && k!=="status" && k!=="_new") out[k]=b[k]; }
+    if(b.id!=null)originalBooks.set(out,{raw:JSON.parse(JSON.stringify(b)),normalized:JSON.parse(JSON.stringify(out))});
     return out;
   }
   var byId={};
@@ -586,7 +588,7 @@ var SEED = [{"id":"1","title":"\"Surely You're Joking, Mr. Feynman!\": Adventure
   function findBook(id){ return byId[id]||null; }
 
   // ---------- persistence ----------
-  function serialize(){ return JSON.stringify(state.books,null,2); }            // canonical = bare array
+  function serialize(){return JSON.stringify(state.books.map(function(b){var baseline=originalBooks.get(b);if(!baseline)return b;var raw=JSON.parse(JSON.stringify(baseline.raw));Object.keys(b).forEach(function(k){if(JSON.stringify(b[k])!==JSON.stringify(baseline.normalized[k]))raw[k]=b[k];});return raw;}),null,2);}            // canonical = bare array
   function scheduleSave(){ if(saveTimer)clearTimeout(saveTimer); saveTimer=setTimeout(saveNow,400); }
   function saveNow(){
     try{ localStorage.setItem(STORAGE_KEY, JSON.stringify({title:state.title,books:state.books})); }catch(e){}
