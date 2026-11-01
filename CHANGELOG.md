@@ -1,0 +1,75 @@
+# Tiago’s Library — changelog
+
+Consolidated 1 November 2026 from this entire chat and saved project receipts. Phases below are chronological; the verified implementation checkpoints are dated 1 November. Individual chat messages do not provide separate dates, so no earlier dates or exact times are inferred. This continues an existing library, rather than claiming it was created in this chat.
+
+## Latest verified checkpoint
+
+**980 books; 239 unread; 957 covers / 23 missing; hosted revision 16.** Status totals: 666 read, 239 unread, 58 unknown, 8 paused, 7 next, 2 reading. All unread books are marked owned. JSON, CSV and embedded frontend data agree. Both *The Matter with Things* volumes are unread.
+
+Current rules: [PROJECT_GUIDE.md](PROJECT_GUIDE.md). Earlier counts below describe their own checkpoints, not today’s total.
+
+## 1 November 2026 — chronological changes
+
+### 1. Recover missing covers and make matching economical
+
+- Retried normal catalogue sources, including the configured Google Books connection; used Open Library and publisher evidence as alternatives. The user authorized sending ordinary book titles/authors for lookup. Google Books still produced quota errors in a later purchase pass; a replacement key was not treated as proof that all requests would work.
+- Tested JEV using original database/export identity fields plus up to ten catalogue candidates and their images. Avoided researching the answer before inference: the aim was faster, cheaper matching. Kept work identity, image type, cover suitability and confidence signals separate; relative scores are not calibrated probabilities.
+- Audited the lowest-confidence 10%, sampled high-confidence selections, then checked the next roughly 20% on request. The fresh 50-book trial exposed two interior pages selected as covers and one valid cover rejected. Added front-cover checks and distinguished missing edition credits from genuine conflicts; a targeted rerun fixed two errors, but did not justify removing manual review.
+- Processed all 169 remaining coverless books: **93 covers added; 76 unresolved**. Reviewed the low-confidence sample, higher-confidence picks and exceptions; all applied images had actual inspection or exact prior image-QA evidence. Subsequent recovery added **50**, then confirmed-answer work added **7**, reaching **1,014 covers / 19 missing among 1,033 records** before deduplication.
+- Used Goodreads in the native browser as the slower fallback: search → open book → open cover → save/use verified image. Also crosschecked the original Goodreads export to identify vague Notion records; Goodreads was not merely an image source. Saved checkpoints when paused, resumed independently, and deferred genuinely user-dependent questions to question widgets and a physical-library checklist.
+
+Evidence: [enrichment history and verification](_build/metadata_enrichment/README.md), [remaining-input checklist](_build/metadata_enrichment/data/campaign_20261101/recovery76_remaining_input.md). The checklist is historical; later confirmed answers supersede its answered items.
+
+### 2. Correct identities, important bibliography and broken text
+
+- Applied the supplied identifications: Caputo’s *What to Believe?*, Aidan Lyon’s *Psychedelic Experience*, Frank/Gleiser/Thompson’s *The Blind Spot*, James Cooke’s *The Dawn of Mind*, Andy Clark’s *The Experience Machine*, Judith Wolfe’s *The Theological Imagination*, and Ferner/Meyns’s *The Philosophers’ Library*.
+- Resolved Peter Enns’s *Exodus for Normal People*, Karen Armstrong’s *Religion: Vintage Minis*, Sharmaine Kwan’s painting book, John Heil’s *What Is Metaphysics?*, the Sadler/Wiggins/Schwartz psychiatric-classification collection, Precision Nutrition’s textbook and the specified Taschen Blake/Dante book. Other biblical titles were research clues, not permission to assign the same author blindly.
+- Filled **100 verified blank metadata fields across 75 books**, including 35 author/editor fields; missing authors fell from 49 to 14 at that checkpoint. *The Broken Ring* correctly credits Jean Borella. Preserved author/editor/translator roles and source evidence rather than inferring edition facts from artwork.
+- Repaired **100 corrupted string fields**, including the visible Exodus punctuation, using original/source text and publisher evidence. Kept existing records and recoverable before/after values.
+- Left ambiguous identities unresolved rather than guessing. Paul Oliver’s *Mysticism* suggestion could not be established by same-month dates; the vague entry remains separate pending evidence.
+
+### 3. Make browsing and editing consistent; publish the library
+
+- Added visible reading dates and a Columns chooser, with consistent table rows and full text in details. Preserved month-only date precision. Investigated Oxford entries against their import/source information rather than assuming ownership or reading status from a cover.
+- Presented five date-navigation concepts; implemented the selected Photos-style left rail: vertically centered dot-matrix year, subtler month/count, and month/year navigation within the filtered library.
+- Used the user’s existing **personal Goodreads ratings**, correcting the initial Amazon interpretation. Made ratings editable in covers, list, table and details; missing ratings stay unrated.
+- Presented three cover treatments before implementation. Applied the selected **option 3: centered edge-to-edge crop**, uniform 2:3 frames without stretching; details retain the complete image.
+- Centered the book grid against the header’s logo and view controls. Reserved consistent title, author, date and star bands so differing text lengths do not shift rating rows.
+- Reduced scroll work through nearby-card tracking, cached month counts, one lazy batch per animation frame and unchanged-geometry checks. Verified behavior and native scrolling; no measured FPS or universal smoothness claim.
+- Published through private GitHub, Railway and the existing shared Supabase project. Public browsing uses simple password-unlocked editing, without account signup. Protected saves with session authentication and revision checks; code deployments do not overwrite hosted data. Kept credentials out of source/docs and verified save replay, field preservation and stale-save rejection.
+
+### 4. Consolidate duplicates across all statuses
+
+- An initial read-only audit had not removed every duplicate; the user’s Harvey and Han examples prompted an all-status cleanup. Manually confirmed **49 groups / 53 extra records: 1,033 → 980**. Preserved complete original objects, aliases, conflicts, sources, ratings, dates and images.
+- Adopted the user’s cover preference: choose the best-looking and/or most modern **correct same-work** cover. Artwork does not establish the owned edition.
+- Documented current policy, deployment, provenance and recovery in the project guide. Historical counts remain attributable to their checkpoints.
+
+### 5. Sort owned unread books by acquisition
+
+- Made Unread default to newest acquired, following `booksbought.md` top-to-bottom; retained *After Christianity* as newest and the embodied-cognition handbook as the oldest log anchor. Added nine missing purchases: **980 → 989**, with 246 unread and 23 missing covers after five new covers.
+- Moved the Filler and Morimoto books near the recent purchases using the user’s approximate-month clarification, explicitly preserving uncertain relative order. Used original Goodreads **Date Added as a labelled proxy**, never a purchase fact, for older matches. At this checkpoint: 114 log-ordered, 2 user-clarified, 92 Goodreads-proxy and 38 unknown-order unread records; unknowns stayed last.
+- Added acquisition provenance to exports, columns and details; hid the reading-date rail for relative acquisition order. Left the purchase log unchanged. Confirmed Vinland Saga Omnibus 10/11 as owned after the user answered.
+
+### 6. Add restrained cover feedback
+
+- Added a subtle sage glow/rim, 3px lift and 1.2% enlargement over 240ms. Kept text/stars stationary, quieter list/table feedback, keyboard focus and reduced-motion support. Used CSS only, avoiding pointer-tracking or additional scroll work; deployed and checked native hover behavior.
+
+### 7. Re-audit missed duplicates and reused covers
+
+- Added a reusable **≥95% title OR cover-similarity candidate scan**, without filtering out differing authors/statuses first. Manually reviewed all **79 flagged pairs among 989 records**: combined the Camus typo/author-appended pair, retained 76 distinct pairs and held the generic Bible identity. **989 → 988**.
+- Corrected AA100 *Place and Leisure*’s reused *Cultural Encounters* image. These are distinct books, not duplicates; an ISBN lookup also returned the wrong image, so actual cover text and retailer evidence determined the correction.
+- Broadened the search and triple-checked a further **20-pair shortlist** against full metadata/history, actual cover text and original records/catalogues. Combined Escher and Lyotard imports; corrected Oxford *Phaedrus*’s erroneous *Phaedo* cover. **988 → 986**. Algorithms generate leads only; reviewed fingerprints and verdicts support later rescans, not a claim that no possible duplicate remains.
+
+Evidence: [initial cleanup](_build/hosted_library_20261101/DEDUPLICATION_REPORT.md), [95% audit](_build/hosted_library_20261101/DUPLICATE95_REPORT.md), [triple-check audit](_build/hosted_library_20261101/TRIPLECHECK_REPORT.md).
+
+### 8. Apply final answers and clarify the edition rule
+
+- Combined Banich, Plato’s *Phaedrus*, Augustine’s *Confessions*, the saints encyclopedia and *Tao Te Ching*: **986 → 980**. The user clarified that same book/same author normally combines across editions/translations unless strong evidence or an explicit choice requires otherwise; they are not tracking rereads of different editions.
+- Kept *The Matter with Things* as **two volume entries**, removed the redundant whole-work card, then explicitly confirmed both volumes **unread**. Archived the aggregate read date/rating as superseded history on both volumes; did not invent volume completions or copy the aggregate rating into current ratings.
+- Verified revisions **14 → 15 → 16**, exact preservation of 973 unrelated records and JSON/CSV/frontend agreement. These later answers supersede the earlier five pending edition/set cases.
+
+## Remaining work and standing verification
+
+There are **23 missing covers** at the latest checkpoint. Identity/physical-library checks remain for genuinely vague entries, including the generic Bible, uncertain Mysticism, author-only Han/Pessoa/Hearn entries, Prayer Book, World Religions, Nietzsche volume, “What’s the difference?” and the uncertain Oxford ethics handbook. Do not re-ask already answered cases; consult the latest receipts before the older checklist. Unknown acquisition order remains explicitly unknown rather than fabricated.
+
+For future enrichment, supply raw source metadata to JEV, audit the lowest-confidence 10% plus high-confidence samples and exceptions, and reject interior pages/wrong works. For duplicates, algorithms only shortlist; manually triple-check before merging. Preserve originals and exact deltas, fetch fresh hosted state, compare revisions and verify exports/readback. This documentation consolidation changes no books or ratings.
