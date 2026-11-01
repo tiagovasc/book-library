@@ -929,6 +929,7 @@ var SEED = [{"id":"1","title":"\"Surely You're Joking, Mr. Feynman!\": Adventure
   function renderView(keep){
     var y=window.scrollY, want=PAGE[ui.view];
     if(keep&&view.rendered>want) want=view.rendered;
+    if(timelineObserver){timelineObserver.disconnect();nearbyCards.clear();}
     view.list=getView(); view.rendered=0; view.key=null; view.box=null; view.counts={};
     if(ui.view!=="table") view.list.forEach(function(b){ var k=groupOf(b); view.counts[k]=(view.counts[k]||0)+1; });
     document.body.setAttribute("data-view",ui.view);
@@ -969,13 +970,17 @@ var SEED = [{"id":"1","title":"\"Surely You're Joking, Mr. Feynman!\": Adventure
         if(html&&view.box) view.box.insertAdjacentHTML("beforeend",html);
       }
       view.rendered=end;
-      markLoaded(content);
+      markLoaded(content); trackTimelineCards();
     }
     var lm=$("loadmore");
     lm.hidden=view.rendered>=view.list.length;
     lm.textContent="Showing "+fmtN(view.rendered)+" of "+fmtN(view.list.length);
   }
-  function fill(){ var guard=0; while(view.rendered<view.list.length && sentinel.getBoundingClientRect().top<window.innerHeight+1600 && guard++<40){ appendBatch(PAGE[ui.view]); } }
+  var fillFrame=0;
+  function fill(){
+    if(fillFrame)return;
+    fillFrame=requestAnimationFrame(function(){fillFrame=0;if(view.rendered<view.list.length&&sentinel.getBoundingClientRect().top<innerHeight+1600){appendBatch(PAGE[ui.view]);fill();}});
+  }
   function ensureRendered(idx){ while(view.rendered<=idx && view.rendered<view.list.length){ appendBatch(PAGE[ui.view]); } }
   function refreshBookEls(b){
     var sd=shortDates();
@@ -984,7 +989,7 @@ var SEED = [{"id":"1","title":"\"Surely You're Joking, Mr. Feynman!\": Adventure
       if(!html) return;
       var tmp=document.createElement(isTr?"tbody":"div"); tmp.innerHTML=html; el.replaceWith(tmp.firstElementChild);
     });
-    markLoaded(content);
+    markLoaded(content); trackTimelineCards();
   }
 
   // ---------- notch: status counts, filters, results ----------
@@ -1086,16 +1091,17 @@ var SEED = [{"id":"1","title":"\"Surely You're Joking, Mr. Feynman!\": Adventure
   var compact=false, ticking=false;
   function onScroll(){
     if(ticking) return; ticking=true;
-    requestAnimationFrame(function(){ ticking=false; var c=window.scrollY>56; if(c!==compact){ compact=c; notch.classList.toggle("compact",c); } fill(); updateTimeline(); });
+    requestAnimationFrame(function(){ ticking=false; updateTimeline();var c=window.scrollY>56; if(c!==compact){ compact=c; notch.classList.toggle("compact",c); } fill(); });
   }
+  function setNotchMetric(key,value){var style=document.documentElement.style;if(style.getPropertyValue(key)!==value)style.setProperty(key,value);}
   function measureNotch(){
     var main=notch.querySelector(".n-main"), row2=notch.querySelector(".n-row2");
     var h=main.offsetHeight+row2.offsetHeight+24;
-    document.documentElement.style.setProperty("--notch-h",h+"px");
+    setNotchMetric("--notch-h",h+"px");
     // Browsing columns share the logo-to-view-switch span of the header.
     var left=notch.querySelector(".brand .mark").getBoundingClientRect().left, right=$("viewSwitch").getBoundingClientRect().right;
-    document.documentElement.style.setProperty("--books-left",left+"px");
-    document.documentElement.style.setProperty("--books-width",Math.max(0,right-left)+"px");
+    setNotchMetric("--books-left",left+"px");
+    setNotchMetric("--books-width",Math.max(0,right-left)+"px");
   }
 
   // ---------- toast (drops from the notch) ----------
@@ -1347,19 +1353,26 @@ var SEED = [{"id":"1","title":"\"Surely You're Joking, Mr. Feynman!\": Adventure
 
   // Month navigation is derived from the filtered/sorted list, including unloaded batches.
   var dateRail=document.createElement('aside');dateRail.className='date-rail';dateRail.setAttribute('aria-label','Reading date navigation');dateRail.hidden=true;document.body.appendChild(dateRail);
-  var dateKeys=[], currentDate='';
+  var dateKeys=[], currentDate='', timelineCounts={}, nearbyCards=new Set();
+  var timelineObserver=window.IntersectionObserver?new IntersectionObserver(function(entries){
+    entries.forEach(function(entry){if(entry.isIntersecting)nearbyCards.add(entry.target);else nearbyCards.delete(entry.target);});updateTimeline();
+  },{rootMargin:'100px 0px 100px 0px'}):null;
+  function trackTimelineCards(){
+    if(!timelineObserver)return;
+    content.querySelectorAll('[data-id]:not([data-scroll-watch])').forEach(function(el){el.dataset.scrollWatch='1';timelineObserver.observe(el);});
+  }
   function monthName(k){return /^\d{4}-\d{2}$/.test(k)?new Date(Number(k.slice(0,4)),Number(k.slice(5,7))-1,1).toLocaleString('en',{month:'long'}):k;}
   function buildTimeline(){
     var enabled=shortDates()&&view.list.some(function(b){return !!b.date_read;});dateRail.hidden=!enabled;document.body.classList.toggle('has-timeline',enabled);if(!enabled)return;
-    dateKeys=[];view.list.forEach(function(b){var k=groupOf(b);if(/^\d{4}/.test(k)&&dateKeys.indexOf(k)<0)dateKeys.push(k);});
+    timelineCounts={};dateKeys=[];view.list.forEach(function(b){var k=groupOf(b);timelineCounts[k]=(timelineCounts[k]||0)+1;if(/^\d{4}/.test(k)&&dateKeys.indexOf(k)<0)dateKeys.push(k);});
     var last='', html='';dateKeys.forEach(function(k){var y=k.slice(0,4);if(y!==last){html+='<button data-date="'+k+'" title="Jump to '+y+'">'+y+'</button>';last=y;}html+='<button class="month-tick" data-date="'+k+'" title="'+monthName(k)+' '+y+'" aria-label="Jump to '+monthName(k)+' '+y+'">'+monthName(k).slice(0,3)+'</button>';});
     dateRail.innerHTML='<div class="date-context"><div id="railYear"></div><div class="date-month" id="railMonth"></div><div class="date-count" id="railCount"></div></div><nav class="date-track" aria-label="Jump to a reading month">'+html+'</nav>';currentDate='';updateTimeline();
   }
   function updateTimeline(){
-    if(dateRail.hidden)return;var nodes=content.querySelectorAll('[data-id]'), mid=innerHeight/2, chosen=null, best=Infinity;
-    Array.prototype.forEach.call(nodes,function(el){var rect=el.getBoundingClientRect();if(rect.bottom<0||rect.top>innerHeight)return;var b=findBook(el.dataset.id);if(!b||!b.date_read)return;var dist=Math.abs((rect.top+rect.bottom)/2-mid);if(dist<best){best=dist;chosen=groupOf(b);}});
+    if(dateRail.hidden)return;var nodes=timelineObserver?Array.from(nearbyCards):content.querySelectorAll('[data-id]'), mid=innerHeight/2, chosen=null, best=Infinity;
+    Array.prototype.forEach.call(nodes,function(el){if(!el.isConnected){nearbyCards.delete(el);return;}var rect=el.getBoundingClientRect();if(rect.bottom<0||rect.top>innerHeight)return;var b=findBook(el.dataset.id);if(!b||!b.date_read)return;var dist=Math.abs((rect.top+rect.bottom)/2-mid);if(dist<best){best=dist;chosen=groupOf(b);}});
     if(!chosen)chosen=dateKeys[0];if(!chosen||chosen===currentDate)return;currentDate=chosen;
-    $('railYear').innerHTML=dotMatrix(chosen.slice(0,4),4);$('railMonth').textContent=monthName(chosen);$('railCount').textContent=countBooks(view.list.filter(function(b){return groupOf(b)===chosen;}).length);
+    $('railYear').innerHTML=dotMatrix(chosen.slice(0,4),4);$('railMonth').textContent=monthName(chosen);$('railCount').textContent=countBooks(timelineCounts[chosen]||0);
     dateRail.querySelectorAll('[data-date]').forEach(function(el){var active=el.classList.contains('month-tick')&&el.dataset.date===chosen;el.classList.toggle('active',active);if(active)el.setAttribute('aria-current','date');else el.removeAttribute('aria-current');});
   }
   dateRail.addEventListener('click',function(e){var el=e.target.closest('[data-date]');if(!el)return;var k=el.dataset.date,idx=view.list.findIndex(function(b){return groupOf(b)===k;});if(idx<0)return;ensureRendered(idx);var node=content.querySelector('[data-id="'+cssq(view.list[idx].id)+'"]');if(node){var heading=node.closest('.group');(heading||node).scrollIntoView({block:'start',behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth'});}});
