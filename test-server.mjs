@@ -11,3 +11,8 @@ test('private tooling is never served',async()=>{
  try{for(const route of ['/_build/before-books.json','/server.mjs','/.env','/supabase.sql']){const r=await fetch(`http://127.0.0.1:${server.address().port}${route}`);assert.equal(r.status,404);}}
  finally{await new Promise(resolve=>server.close(resolve));}
 });
+test('library data is inaccessible without a session',async()=>{
+ await new Promise(resolve=>server.listen(0,'127.0.0.1',resolve));
+ try{for(const route of ['/books.json','/index.html','/covers/cover_1.jpg']){const r=await fetch(`http://127.0.0.1:${server.address().port}${route}`);assert.equal(r.status,401);}}
+ finally{await new Promise(resolve=>server.close(resolve));}
+});
