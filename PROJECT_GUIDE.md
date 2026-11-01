@@ -1,0 +1,66 @@
+# Tiago’s Library — current project guide
+
+Current decisions and operating rules, consolidated 1 November 2026. Earlier README counts and release notes remain historical; use the latest checkpoint linked below for data state.
+
+## Live app and source of truth
+
+- Public library: https://book-library-production-4bee.up.railway.app/
+- Private deployable source: https://github.com/tiagovasc/book-library
+- Railway serves the frontend, backend and cover files. Supabase’s existing shared **LLM Project Hub** stores the hosted library in the prefixed `book_library_state` table. Do not create a separate Supabase project.
+- Browsing is public. **Menu → Enable editing** opens a simple password form. The user-supplied password unlocks edits with a signed HttpOnly/SameSite session cookie; **Lock editing** ends the session. No accounts or signup system.
+- Credentials stay in ignored local configuration and Railway service variables, never HTML, documentation or the deployment repository. Do not print them. Authentication remains required for saves.
+- Hosted Supabase state is authoritative for online edits. Local `books.json` is the local canonical snapshot; `books.csv` and embedded `SEED` must agree when synchronized. There is no continuous cloud-to-local synchronization.
+- Before any data cleanup, fetch a fresh hosted snapshot. Preserve recent user edits and compare the library revision when saving. A stale save must fail rather than overwrite a newer session.
+- Normal UI deployments publish code only. Never reseed an existing hosted library from an old local file. The existing PowerShell launcher remains the local/offline option.
+
+## Current duplicate cleanup
+
+The whole library, across every status, was checked. **49 confirmed same-work groups consolidated 53 extra records: 1,033 → 980 visible records.** This includes all 11 pairs previously identified in the read-only audit, plus unread and cross-status duplicates such as *The Disappearance of Rituals*, *Religion: Vintage Minis*, *What Is Metaphysics?* and *Vita Contemplativa*.
+
+Current data transaction: `_build/hosted_library_20261101/dedup-current-checkpoint.json`. It links the exact before/after hosted snapshots, reviewed plan, revision checks, verified local backups and preservation results. At this checkpoint: 961 records have covers; 19 lack covers.
+
+Duplicate rules:
+
+1. Compare all statuses, not just Read. Normalize punctuation, case, typos and author names appended to titles. Use authors, subtitles, identifiers, original-source information and reading dates as corroboration.
+2. Same-month or adjacent entries are useful clues, not proof. Imported Goodreads dates ending in `01` can represent month-only precision. Prefer a supported exact completion day in the same month; preserve every original date.
+3. Similar title, shared author, identical cover or shared Google volume ID alone cannot establish identity. Keep distinct numbered volumes, magazine issues, books by different authors, explicit translations and standalone works versus larger collections separate.
+4. Consolidate confirmed duplicate imports into one stable surviving ID. Preserve ownership, source lists, tags, notes and reading status. Preserve current personal ratings; conflicting ratings/dates/edition values need a retained history rather than silent loss.
+5. Every consolidated group retains complete verbatim original objects in `merged_records`, removed-ID aliases in `merged_record_ids`, and conflicting metadata in `merge_conflicts`. Old IDs resolve to the survivor. No original image file is deleted.
+6. Exact source snapshots and transaction receipts provide full recovery. Do not restore a stale whole-library backup over later edits. Roll back only the affected groups after a fresh snapshot and revision check.
+
+A generic **The Bible** entry and the uncertain **Mysticism: An Introduction** identity still require confirmation; do not guess which translation/book they refer to. The prior Paul Oliver suggestion could not be corroborated by same-month source dates. Explicitly different books/editions are not unresolved cleanup failures: examples retained include James Trapp’s *Tao Te Ching*, the two-part *Pilgrim* collection, separate Plato collections, the Greenberg lecture course versus book, and the two Orsi titles. The latest plan records exclusions.
+
+## Covers and missing metadata
+
+**User preference: when several covers correctly match the book, choose the one that looks best and/or most modern.** Prefer a clean, attractive, readable design and a sharp image; avoid scan borders, ebook banners, placeholders and interior title pages. When the design is the same, prefer higher resolution. Preserve source provenance and the original files. This preference does not permit using an attractive cover from a different book, author or volume. An exact physical edition is not required solely for its artwork when a correct same-work cover is suitable; preserve edition metadata separately.
+
+The duplicate cleanup visually compared the cover alternatives and applied this preference, including modern/cleaner choices for *Exodus*, *The Need for Roots*, *A Short History of Ethics* and *Plotinus*. `cover_selection` records the chosen source record and rule.
+
+For future enrichment, follow `_build/metadata_enrichment/README.md` and its campaign evidence:
+
+- Try the configured Google Books connection and ordinary catalogue lookups first. Check existing source information, including original Goodreads export matches, when a Notion entry is vague.
+- Goodreads is useful for identifying the correct book, not just fetching an image. As a slower last resort, search it in the native browser, open the book and cover, then save/use that verified image.
+- Give JEV the original database/export title, author, year and other available identity fields alongside catalogue candidates and their images/metadata. Do not manually curate most of the answer before calling it; the purpose is faster, cheaper automated selection.
+- Use the improved pipeline’s identity/cover checks and confidence evidence. A visually plausible image must also be a real front cover. Explicitly check interior title-page errors and valid covers being wrongly rejected. Score margins between candidates are supporting signals, not calibrated probabilities by themselves.
+- Manually review the lowest-confidence 10% and a sample of high-confidence picks before applying covers; expand review when errors warrant it. Preserve candidate receipts and actual verification outcomes. Do independent research first and leave genuinely user-dependent questions until the remaining work is done; use question widgets when clarification is needed.
+- Fill important missing metadata such as author/editor, publisher, publication year and pages from supported evidence. Distinguish author, editor and translator roles. Preserve existing curated values unless a correction is supported; do not fabricate details.
+
+## Interface decisions
+
+- Keep the existing black notch, muted accents, library icon and dot-matrix year branding.
+- The selected Photos-style date rail keeps year/month vertically centered on the left while scrolling. The year is prominent; month, count and navigation are more subtle. Month/year controls jump through the filtered library.
+- On desktop the book area aligns from the header logo icon to the Table/view-switch edge. Medium widths reserve room for the date rail; mobile has its own compact layout.
+- User selected **option 3: edge-to-edge crop**. Browsing covers fill uniform 2:3 frames, centered without stretching. The detail drawer shows the complete original image.
+- Cover cards reserve two title lines, one author line, one date/metadata line and a consistent rating band. Short titles and missing fields must not move stars upward. List/table rows should remain consistent; full text belongs in the detail view.
+- Ratings are the user’s personal **Goodreads ratings**, not Amazon public averages. They are editable in cards, list, table and detail view after unlocking editing. Leave missing ratings unrated for the user to fill.
+- Date read must remain available and visible in the appropriate list/table views. The Columns chooser lets the user select the available fields. Preserve recorded precision; do not invent exact days for month-only completions.
+- Preserve proper Unicode typography. Fix encoding corruption from source evidence without changing identities by guesswork.
+- Scrolling uses nearby-only card tracking and cached month counts. Lazy loading appends at most one batch per animation frame. Avoid scanning every loaded card or inserting many batches synchronously on each scroll event. Skip unchanged header geometry writes. Do not claim measured FPS or universal smoothness without measurement.
+
+## Verification, deployment and recovery
+
+Before valuable/bulk changes, preserve and hash-check the current files and hosted payload. Verify real outputs: canonical JSON/CSV/embedded data, unrelated fields, source counts, live persistence and the deployed UI. Screenshots establish layout, not subjective performance. Never test ratings by changing a real user rating without authorization; isolated tests and unchanged-data live save checks are available.
+
+The hosted-release guide `_build/hosted_library_20261101/README.md` maps deployment scripts, private credential locations, release Git checkout, receipts, screenshots and code-only rollback procedures. `deployment.json` records the latest repository commit and provider IDs. `server.mjs`, `Dockerfile`, `railway.json` and `supabase.sql` define the hosted runtime. Keep deployment payloads curated: exclude internal tooling, backups and secrets. Evaluate Railway sleeping/costs according to actual use; no blanket sleeping requirement.
+
+Preserve this guide, the Dashboard README, enrichment guide and dated changelog when decisions change. Append dated corrections rather than erasing historical evidence. Existing grouped routing covers this project and its generated evidence.
