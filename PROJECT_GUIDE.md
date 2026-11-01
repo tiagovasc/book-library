@@ -67,6 +67,8 @@ For future enrichment, follow `_build/metadata_enrichment/README.md` and its cam
 
 ## Interface decisions
 
+- **Cover hover, 1 November 2026:** fine-pointer hover adds a restrained sage rim/glow, 3px cover lift and 1.2% scale over 240ms. Text/stars stay fixed; list/table covers use a smaller response. Keyboard focus receives the same quiet glow. Touch devices avoid sticky hover, and reduced-motion settings disable transforms. CSS only; no pointer-tracking or scrolling work. Exact pre-change code and receipt: `_build/hosted_library_20261101/before-cover-hover-index.html` and `cover-hover-release.json`.
+
 - Keep the existing black notch, muted accents, library icon and dot-matrix year branding.
 - The selected Photos-style date rail keeps year/month vertically centered on the left while scrolling. The year is prominent; month, count and navigation are more subtle. Month/year controls jump through the filtered library.
 - On desktop the book area aligns from the header logo icon to the Table/view-switch edge. Medium widths reserve room for the date rail; mobile has its own compact layout.
