@@ -11,8 +11,8 @@ test('private tooling is never served',async()=>{
  try{for(const route of ['/_build/before-books.json','/server.mjs','/.env','/supabase.sql']){const r=await fetch(`http://127.0.0.1:${server.address().port}${route}`);assert.equal(r.status,404);}}
  finally{await new Promise(resolve=>server.close(resolve));}
 });
-test('library data is inaccessible without a session',async()=>{
+test('public library is readable but saving requires a session',async()=>{
  await new Promise(resolve=>server.listen(0,'127.0.0.1',resolve));
- try{for(const route of ['/books.json','/index.html','/covers/cover_1.jpg']){const r=await fetch(`http://127.0.0.1:${server.address().port}${route}`);assert.equal(r.status,401);}}
+ try{const base=`http://127.0.0.1:${server.address().port}`;assert.equal((await fetch(base+'/save',{method:'POST',body:'[]'})).status,401);const page=await fetch(base+'/');assert.equal(page.status,200);assert.match(await page.text(),/window.CLOUD_CAN_EDIT=false/);}
  finally{await new Promise(resolve=>server.close(resolve));}
 });

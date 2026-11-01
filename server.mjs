@@ -40,8 +40,9 @@ export const server=http.createServer(async(req,res)=>{
       if(!process.env.LIBRARY_PASSWORD||!process.env.SESSION_SECRET||!timingSafeEqual(digest(password),digest(process.env.LIBRARY_PASSWORD)))return send(res,401,{error:'Incorrect library password'});
       const expiry=String(Date.now()+7*86400000);res.writeHead(303,{Location:'/', 'Set-Cookie':`library_session=${expiry}.${sign(expiry)}; HttpOnly; SameSite=Strict; Path=/; Max-Age=604800${process.env.NODE_ENV==='production'?'; Secure':''}`,'Cache-Control':'no-store'});return res.end();
     }
-    if(url.pathname==='/'&&!authenticated(req)){res.writeHead(200,{'Content-Type':'text/html; charset=utf-8','Cache-Control':'no-store'});return res.end(loginPage);}
-    if((url.pathname==='/books.json'||url.pathname==='/save'||url.pathname==='/index.html'||url.pathname.startsWith('/covers/'))&&!authenticated(req))return send(res,401,{error:'Open the library and sign in first'});
+    if(url.pathname==='/login'&&req.method==='GET'){res.writeHead(200,{'Content-Type':'text/html; charset=utf-8','Cache-Control':'no-store'});return res.end(loginPage);}
+    if(url.pathname==='/logout'){res.writeHead(303,{Location:'/', 'Set-Cookie':'library_session=; HttpOnly; SameSite=Strict; Path=/; Max-Age=0','Cache-Control':'no-store'});return res.end();}
+    if(url.pathname==='/save'&&!authenticated(req))return send(res,401,{error:'Enter the library password to enable edits'});
     if(url.pathname==='/health'){if(!base||!key)return send(res,503,{ok:false});const rows=await db('GET','?id=eq.library&select=revision');return send(res,rows.length?200:503,{ok:!!rows.length});}
     if(url.pathname==='/books.json'&&req.method==='GET'){
       const [row]=await db('GET','?id=eq.library&select=books,revision');if(!row)return send(res,503,{error:'Library is not initialized'});
@@ -61,7 +62,7 @@ export const server=http.createServer(async(req,res)=>{
     let filename=url.pathname==='/'?'index.html':url.pathname.slice(1);
     if(!(filename==='index.html'||/^covers\/[a-zA-Z0-9_.-]+\.(jpg|png|webp|jpeg)$/.test(filename)))return send(res,404,{error:'Not found'});
     let raw=await readFile(path.join(root,filename));
-    if(filename==='index.html')raw=Buffer.from(raw.toString().replace('<head>','<head><script>window.CLOUD_LIBRARY=true;</script>'));
+    if(filename==='index.html')raw=Buffer.from(raw.toString().replace('<head>',`<head><script>window.CLOUD_LIBRARY=true;window.CLOUD_CAN_EDIT=${authenticated(req)};</script>`));
     res.writeHead(200,{'Content-Type':filename.endsWith('.html')?'text/html; charset=utf-8':filename.endsWith('.png')?'image/png':filename.endsWith('.webp')?'image/webp':'image/jpeg','X-Content-Type-Options':'nosniff','Cache-Control':filename==='index.html'?'no-cache':'public, max-age=86400'});res.end(req.method==='HEAD'?undefined:raw);
   }catch(error){console.error('Request failed:',error.message);send(res,503,{error:'Library storage unavailable. Your changes remain in this browser.'});}
 });

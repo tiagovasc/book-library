@@ -1047,6 +1047,10 @@ var SEED = [{"id":"1","title":"\"Surely You're Joking, Mr. Feynman!\": Adventure
       txt="Saving in this browser"; connect.hidden=false; connect.textContent="Connect books.json"; connect.onclick=connectFile;
       hint="Changes stay in this browser. Connect books.json to also save to disk, or open the library with start-dashboard.bat.";
     }
+    if(window.CLOUD_LIBRARY){
+      txt=window.CLOUD_CAN_EDIT?(serverSaveState==='saving'?'Saving…':serverSaveState==='error'?'Save failed — changes kept in this browser':serverSaveState==='saved'?'Saved to library':'Editing enabled'):'Public view · Editing locked';
+      hint=window.CLOUD_CAN_EDIT?'Changes are saved online. Use Lock editing in this menu when finished.':'Browse freely. Choose Enable editing to enter the library password.';
+    }
     $("dot").className="save-dot"+(cls?" "+cls:""); $("dot2").className="dot"+(cls?" "+cls:"");
     $("fileStatusText").textContent=txt; $("fileHint").textContent=hint;
   }
@@ -1341,6 +1345,16 @@ var SEED = [{"id":"1","title":"\"Surely You're Joking, Mr. Feynman!\": Adventure
     dateRail.querySelectorAll('[data-date]').forEach(function(el){var active=el.classList.contains('month-tick')&&el.dataset.date===chosen;el.classList.toggle('active',active);if(active)el.setAttribute('aria-current','date');else el.removeAttribute('aria-current');});
   }
   dateRail.addEventListener('click',function(e){var el=e.target.closest('[data-date]');if(!el)return;var k=el.dataset.date,idx=view.list.findIndex(function(b){return groupOf(b)===k;});if(idx<0)return;ensureRendered(idx);var node=content.querySelector('[data-id="'+cssq(view.list[idx].id)+'"]');if(node){var heading=node.closest('.group');(heading||node).scrollIntoView({block:'start',behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth'});}});
+
+  if(window.CLOUD_LIBRARY){
+    var accessButton=document.createElement('a');accessButton.className='m-item';accessButton.href=window.CLOUD_CAN_EDIT?'/logout':'/login';accessButton.textContent=window.CLOUD_CAN_EDIT?'Lock editing':'Enable editing';$('menuPop').prepend(accessButton);
+    if(!window.CLOUD_CAN_EDIT){
+      var editTargets='.stars button,#add,#importBtn,#resetBtn,[data-act="own"],[data-act="remove"],[data-act="today"],.edit,[data-f],#libTitle';
+      document.addEventListener('click',function(e){if(e.target.closest(editTargets)){e.preventDefault();e.stopImmediatePropagation();location.href='/login';}},true);
+      document.addEventListener('beforeinput',function(e){if(e.target.closest('.edit,[data-f],#libTitle')){e.preventDefault();e.stopImmediatePropagation();location.href='/login';}},true);
+      document.addEventListener('change',function(e){if(e.target.closest('.status,[data-f]')){e.preventDefault();e.stopImmediatePropagation();location.href='/login';}},true);
+    }
+  }
 
   // ---------- boot ----------
   function bootRender(){
