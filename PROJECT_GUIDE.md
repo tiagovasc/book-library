@@ -13,6 +13,22 @@ Current decisions and operating rules, consolidated 1 November 2026. Earlier REA
 - Before any data cleanup, fetch a fresh hosted snapshot. Preserve recent user edits and compare the library revision when saving. A stale save must fail rather than overwrite a newer session.
 - Normal UI deployments publish code only. Never reseed an existing hosted library from an old local file. The existing PowerShell launcher remains the local/offline option.
 
+## Unread acquisition order — 1 November 2026
+
+Unread means owned but not yet read. Selecting **Unread** defaults to **Recently acquired**, newest first; the sort menu also offers oldest first. Leaving Unread returns to reading-date order. Explicit title/author and other sorts remain available. Acquisition ordering never overwrites reading dates, publication dates, ratings or reading status.
+
+Current state after importing nine purchases absent from the library: **989 records; 246 unread; 966 covers / 23 missing**. Of the unread records, 114 use the purchase log, two use the user's recent-purchase clarification, 92 use Goodreads Date Added as an ordering proxy, and 38 have no reliable acquisition-order evidence. Unknown order is grouped last and uses a stable title tie-break, not an invented chronology.
+
+`Meaning/Books/booksbought.md` is ordered newest at the top, oldest at the bottom. After Christianity by Gianni Vattimo is the confirmed latest purchase. The Routledge Handbook of Embodied Cognition is the oldest log anchor. Preserve the log itself unchanged, including headings. Repeated/set entries can share a position; matching order does not merge book records.
+
+The two misplaced tail entries, James Filler's Heidegger, Neoplatonism, and the History of Being and Kosei Morimoto's In Search of the Bodhisattva Way, were recently acquired, approximately October 2026. Their source lines remain 450/451, but both share a tentative position immediately after the explicitly latest book. Their position relative to other recent purchases is uncertain; the approximate month and uncertainty are recorded separately. No exact purchase day is invented.
+
+For older unlogged books, use a verified title/author or ISBN match to the original Goodreads export in `Book Database Updated 2025.xlsx`, sheet `BACKUPgoodreads_library_export`, field `Date Added`. This is the date added to Goodreads, **not a confirmed purchase date**. Preserve the source row/book ID and label the proxy in the UI. Do not infer acquisition order from publication year, alphabetical spreadsheet rows or arbitrary database IDs. Research found no reliable chronology for the remaining 38; keep their list in the acquisition report.
+
+New fields: `acquisition_order` (lower is newer; relative ordering key, not a date), `acquisition_basis`, `acquisition_log_line`, `acquisition_source`, optional approximate `acquired_date` with precision, `goodreads_date_added` and source evidence. They survive saves/JSON exports; flat order/date/source fields are also included in CSV exports. The Columns chooser exposes order, approximate acquisition month, Goodreads date and basis. Record details explain provenance. The reading-date rail is hidden for this relative-order view to avoid presenting guessed purchase dates as a timeline.
+
+Nine missing purchases were added as owned/unread without changing existing statuses. Sourced author/publication metadata and five verified front covers were added to these nine only. Catalogue edition metadata is identified separately from an unconfirmed owned edition. Google Books returned quota errors in this pass. Reject the retrieved Jung preface page, Segall website portrait and Morimoto social banner; the latter was replaced with the actual publisher front cover. Four of these new records still lack a verified cover. See `_build/hosted_library_20261101/ACQUISITION_ORDER_REPORT.md`, `acquisition-current-checkpoint.json` and `acquisition-new-metadata-checkpoint.json` for exact transactions, unresolved ordering, sources and recovery.
+
 ## Current duplicate cleanup
 
 The whole library, across every status, was checked. **49 confirmed same-work groups consolidated 53 extra records: 1,033 → 980 visible records.** This includes all 11 pairs previously identified in the read-only audit, plus unread and cross-status duplicates such as *The Disappearance of Rituals*, *Religion: Vintage Minis*, *What Is Metaphysics?* and *Vita Contemplativa*.
