@@ -158,6 +158,14 @@
   .results b{color:var(--ink);font-weight:600}
   .results button{border:0;background:var(--sunk);color:var(--ink);border-radius:999px;padding:5px 12px;font-size:13px;font-weight:500}
   .results button:hover{background:var(--line-2)}
+  .results{flex-wrap:wrap;gap:8px}
+  .results .active-chip{display:inline-flex;align-items:center;gap:8px;max-width:100%;min-height:36px;border:1px solid color-mix(in srgb,var(--t-read) 60%,var(--line));background:color-mix(in srgb,var(--t-read) 13%,var(--surface));text-align:left;font-size:12px}
+  .active-chip .chip-text{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .active-chip .chip-x{font-size:16px;line-height:1;flex:none}
+  .pill-select.is-active,#filtersBtn.is-active{box-shadow:inset 0 0 0 1.5px var(--t-read);background:color-mix(in srgb,var(--t-read) 18%,var(--n-fill));color:var(--n-ink)}
+  .sort-active-dot{width:6px;height:6px;flex:none;border-radius:50%;background:var(--t-read);margin-left:6px}
+  #filtersBtn.is-active .badge{background:var(--n-ink);color:var(--n-bg)}
+  @media(pointer:coarse){.results .active-chip{min-height:44px}}
 
   /* group headings: dot-matrix years on a dotted leader */
   .group{margin-top:34px;scroll-margin-top:100px}
@@ -1093,13 +1101,23 @@ var SEED = [{"id":"1","tags":["biography","audiobooks"],"cover":"covers/cover_1.
   }
   function refreshCounts(){ computeFacets(); renderStatusSeg(); buildOwnFilter(); }
   function activeFilters(){ return (ui.own!=="all"?1:0)+(ui.subject!=="all"?1:0)+(ui.enrich!=="all"?1:0); }
+  function defaultSort(){return ui.status==='unread'?'acquired':'dateread';}
   function renderResults(){
-    var q=($("search").value||"").trim(), fc=activeFilters(), el=$("results"), badge=$("filterCount");
-    badge.hidden=!fc; badge.textContent=String(fc);
-    if(!q&&!fc){ el.hidden=true; el.innerHTML=""; return; }
-    var bits=[]; if(q) bits.push("matching \u201c"+esc(q)+"\u201d"); if(fc) bits.push(fc===1?"with 1 filter":"with "+fc+" filters");
-    el.innerHTML='<span><b>'+countBooks(view.list.length)+'</b> '+bits.join(" ")+'</span><button type="button" data-act="clear-search">Clear</button>';
-    el.hidden=false;
+    var q=($('search').value||'').trim(),fc=activeFilters(),el=$('results'),badge=$('filterCount');
+    var sort=$('sort'),sortLabel=sort.closest('.pill-select'),custom=ui.sort!==defaultSort();
+    sortLabel.classList.toggle('is-active',custom);sortLabel.title=custom?'Custom sorting active — use the sort chip below to reset':'Sort and group';
+    var dot=sortLabel.querySelector('.sort-active-dot');if(!dot){dot=document.createElement('span');dot.className='sort-active-dot';dot.setAttribute('aria-hidden','true');sortLabel.prepend(dot);}dot.hidden=!custom;
+    $('filtersBtn').classList.toggle('is-active',!!fc);$('filtersBtn').setAttribute('aria-label',fc?'Filters, '+fc+' active':'Filters');
+    badge.hidden=!fc;badge.textContent=String(fc);
+    if(!q&&!fc&&!custom){el.hidden=true;el.innerHTML='';return;}
+    var chips=[];
+    function chip(key,label,action){return '<button type="button" class="active-chip" data-clear="'+key+'" aria-label="'+esc(action)+'" title="'+esc(action)+'"><span class="chip-text">'+esc(label)+'</span><span class="chip-x" aria-hidden="true">×</span></button>';}
+    if(custom)chips.push(chip('sort','Sort: '+sort.options[sort.selectedIndex].text,'Reset sorting to '+(ui.status==='unread'?'recently acquired':'date read, newest')));
+    if(q)chips.push(chip('search','Search: '+q,'Clear search'));
+    if(ui.own!=='all')chips.push(chip('own',ui.own==='owned'?'Owned books':'Not owned','Remove ownership filter'));
+    if(ui.subject!=='all')chips.push(chip('subject','Subject: '+ui.subject,'Remove subject filter'));
+    if(ui.enrich!=='all')chips.push(chip('enrich','Metadata: '+$('enrichFilter').options[$('enrichFilter').selectedIndex].text,'Remove metadata filter'));
+    el.innerHTML='<span><b>'+countBooks(view.list.length)+'</b></span>'+chips.join('')+(chips.length>1?'<button type="button" data-clear="all">Reset sort &amp; filters</button>':'');el.hidden=false;
   }
   function renderEmpty(){
     var lib=state.books.length===0;
@@ -1412,7 +1430,15 @@ var SEED = [{"id":"1","tags":["biography","audiobooks"],"cover":"covers/cover_1.
   $("subjFilter").addEventListener("change",function(){ ui.subject=this.value; renderView(false); });
   $("enrichFilter").addEventListener("change",function(){ ui.enrich=this.value; renderView(false); });
   $("resetFilters").addEventListener("click",function(){ ui.own="all"; ui.subject="all"; ui.enrich="all"; buildFilters(); renderView(false); });
-  $("results").addEventListener("click",function(e){ if(e.target.closest('[data-act="clear-search"]')) clearSearchAndFilters(false); });
+  $('results').addEventListener('click',function(e){
+    var button=e.target.closest('[data-clear]');if(!button)return;var key=button.dataset.clear;
+    if(key==='all'){$('search').value='';ui.own='all';ui.subject='all';ui.enrich='all';ui.sort=defaultSort();}
+    else if(key==='sort')ui.sort=defaultSort();
+    else if(key==='search')$('search').value='';
+    else if(key==='own')ui.own='all';else if(key==='subject')ui.subject='all';else if(key==='enrich')ui.enrich='all';
+    saveUI();buildFilters();renderView(false);
+    var target=key==='sort'?'sort':key==='search'?'search':'filtersBtn';$(target).focus({preventScroll:true});
+  });
   $("emptyAction").addEventListener("click",function(){ if(state.books.length===0) addBook(); else clearSearchAndFilters(true); });
   var searchTimer=null;
   $("search").addEventListener("input",function(){ if(searchTimer)clearTimeout(searchTimer); searchTimer=setTimeout(function(){ renderView(false); },140); });
