@@ -19,7 +19,7 @@ Current decisions and operating rules, consolidated 1 November 2026. Full-chat c
 - Public library: https://book-library-production-4bee.up.railway.app/
 - Private deployable source: https://github.com/tiagovasc/book-library
 - Railway serves the frontend, backend and cover files. Supabase’s existing shared **LLM Project Hub** stores the hosted library in the prefixed `book_library_state` table. Do not create a separate Supabase project.
-- Browsing is public. **Menu → Enable editing** opens a simple password form. The user-supplied password unlocks edits with a signed HttpOnly/SameSite session cookie; **Lock editing** ends the session. No accounts or signup system.
+- Browsing is public. The header’s **Admin login** lock icon opens a simple password form. The user-supplied password unlocks edits and Admin tools with a signed HttpOnly/SameSite session cookie; **Sign out** ends the session. No accounts or signup system. This supersedes the earlier Menu → Enable editing / Lock editing labels.
 - Credentials stay in ignored local configuration and Railway service variables, never HTML, documentation or the deployment repository. Do not print them. Authentication remains required for saves.
 - Hosted Supabase state is authoritative for online edits. Local `books.json` is the local canonical snapshot; `books.csv` and embedded `SEED` must agree when synchronized. There is no continuous cloud-to-local synchronization.
 - Before any data cleanup, fetch a fresh hosted snapshot. Preserve recent user edits and compare the library revision when saving. A stale save must fail rather than overwrite a newer session.
