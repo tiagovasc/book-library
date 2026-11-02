@@ -1,5 +1,7 @@
 # Tiago’s Library — current project guide
 
+**Repository visibility,2November2026:** https://github.com/tiagovasc/book-library is now **public**, following the user’s request. Scanned all30 pre-publication commits/76 non-image blobs for known library credentials and common secret patterns; no matches or internal credential/backup paths found. Verified public access without authentication. Continue publishing only the curated release; `_build/`, credentials and backups remain excluded. Internal evidence: `_build/public_repo_20261102/`.
+
 **Sort/filter state,2November2026:** non-default sort has a sage outline/dot and a removable Sort chip; active advanced filters have an outlined Filters button/count and individually removable value chips. Reset sorting alone preserves search/filters and returns to date-read newest, or recently acquired in Unread. Reset sort & filters clears search/advanced filters/custom sort while preserving the selected reading-status tab. Default sort has no active cue. Source/evidence: `_build/active_controls_20261102/verification.json`.
 
 **Public reader interface,2November2026:** direct sun/moon appearance toggle and admin-login lock icon live at the header’s right edge. Visitors have no utility menu/Add/import/export/reset/save-status/shortcut panel, and ratings/details are read-only without surprise login redirects. Admin login unlocks management controls and an Admin tools menu; Sign out sits beside appearance and in that menu. Local/offline editing remains available. Purchase-source/proxy labels and record internals stay in the admin view; visitor acquisition groups use plain labels. Evidence: `_build/public_ui_20261102/verification.json`; exact before-code saved there.
@@ -19,7 +21,7 @@ Current decisions and operating rules, consolidated 1 November 2026. Full-chat c
 - Custom domain setup,2November2026: [DOMAIN_SETUP.md](DOMAIN_SETUP.md) documents tiagobooks.com and www, replacing the explicitly retired Medium redirects. The existing Railway URL below remains a fallback; use the domain verification receipt to distinguish configured DNS from confirmed public HTTPS readiness. Same service/data/editing password; email settings preserved.
 
 - Public library: https://book-library-production-4bee.up.railway.app/
-- Private deployable source: https://github.com/tiagovasc/book-library
+- Public deployable source: https://github.com/tiagovasc/book-library
 - Railway serves the frontend, backend and cover files. Supabase’s existing shared **LLM Project Hub** stores the hosted library in the prefixed `book_library_state` table. Do not create a separate Supabase project.
 - Browsing is public. The header’s **Admin login** lock icon opens a simple password form. The user-supplied password unlocks edits and Admin tools with a signed HttpOnly/SameSite session cookie; **Sign out** ends the session. No accounts or signup system. This supersedes the earlier Menu → Enable editing / Lock editing labels.
 - Credentials stay in ignored local configuration and Railway service variables, never HTML, documentation or the deployment repository. Do not print them. Authentication remains required for saves.
