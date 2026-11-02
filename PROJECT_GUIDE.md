@@ -1,5 +1,7 @@
 # Tiago’s Library — current project guide
 
+**TBR,2November2026:** [TBR_GUIDE.md](TBR_GUIDE.md) governs the separate discovery catalogue. New Library/TBR navigation; Instagram, Book shops and Online sources; only Book shops populated.753 entries preserve819 photo sightings, latest photo first, with city/shop/date, filters and all visit histories.725 covered entries/28 placeholders. Static public TBR data never writes to the Supabase personal-library row. Include `tbr.js`, `tbr.css`, `tbr-bookshops.json` and referenced optimized covers in every release. Import/interaction evidence: `_build/tbr_bookshops_20261102/`.
+
 **Production release confirmed,2November2026:** the staged MVP-to-production pass is now deployed (9d186ee). Include `covers/web/*.jpg` with releases and preserve original-image fallback; the hosted page strips embedded offline data and loads the authoritative API. Live compression/cache/security/login/asset checks passed;977books and revision38 unchanged. Twelve isolated server tests and save-preservation checks pass;38 browser checks were performed by the staging agent, not rerun as live browser measurements. Receipt/rollback: `_build/mvp_to_prod_deploy_20261102/`; earlier “not deployed” statements describe the staged checkpoint.
 
 **Production pass, 2 November 2026 (code ready, not deployed):** see the section at the end of this guide and `_build/mvp_to_prod_20261102/README.md`.

@@ -6,3 +6,7 @@ Railway hosts the app and cover assets. Supabase's shared LLM Project Hub stores
 
 
 Current project rules and duplicate policy: [PROJECT_GUIDE.md](PROJECT_GUIDE.md). Hosted Supabase state remains authoritative for online edits; embedded data is a fallback snapshot, never an automatic reseed.
+
+## TBR
+
+The Library/TBR switch opens three sources: Instagram, Book shops and Online. Only Book shops is populated for now:753 entries from819 photo records, newest photographs first, with city, bookshop and photo date. Search, city/shop filters, layouts and full visit histories are included. TBR is a separate read-only discovery catalogue; it does not change personal-library records or ratings. See [TBR_GUIDE.md](TBR_GUIDE.md).

@@ -120,6 +120,8 @@ async function librarySnapshot(){
 export function resetCaches(){page=null;snapshot=null;attempts.clear();}
 
 const STATIC_TYPES={'.svg':'image/svg+xml','.ico':'image/x-icon','.png':'image/png','.webp':'image/webp','.jpg':'image/jpeg','.jpeg':'image/jpeg'};
+const TBR_FILES={'tbr.js':'text/javascript; charset=utf-8','tbr.css':'text/css; charset=utf-8','tbr-bookshops.json':'application/json; charset=utf-8'};
+const tbrVariants=new Map();
 const ROOT_FILES=['favicon.svg','favicon.ico','apple-touch-icon.png'];
 const COVER=/^covers\/(?:web\/)?[a-zA-Z0-9_.-]+\.(jpg|png|webp|jpeg)$/;
 
@@ -169,6 +171,14 @@ export const server=http.createServer(async(req,res)=>{
     if(filename==='index.html'){
       const pages=await pageVariants();
       return sendVariant(req,res,authenticated(req)?pages.admin:pages.public,{type:'text/html; charset=utf-8',etag:(authenticated(req)?pages.admin:pages.public).etag,cache:'no-cache',extra:{'Content-Security-Policy':CSP}});
+    }
+    if(Object.hasOwn(TBR_FILES,filename)){
+      const file=path.join(root,filename),st=await stat(file).catch(()=>null);
+      if(!st||!st.isFile())return send(res,404,{error:'Not found'});
+      const etag=`W/"${st.size.toString(16)}-${Math.floor(st.mtimeMs).toString(16)}"`;
+      let cached=tbrVariants.get(filename);
+      if(!cached||cached.etag!==etag){cached={etag,variant:await compressed(await readFile(file),5)};tbrVariants.set(filename,cached);}
+      return sendVariant(req,res,cached.variant,{type:TBR_FILES[filename],etag,cache:'no-cache'});
     }
     if(!(ROOT_FILES.includes(filename)||COVER.test(filename)))return send(res,404,{error:'Not found'});
     const file=path.join(root,filename), st=await stat(file).catch(()=>null);
