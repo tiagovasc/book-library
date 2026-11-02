@@ -1,5 +1,7 @@
 # SOP — missing book metadata and covers
 
+**Additional duplicate guard,2November2026:** supplement full-title similarity with main-title-before-subtitle comparisons so “Confession of a Philosopher” can surface beside the much longer “Confessions of a Philosopher: …”. This produces false positives for generic titles/series: manually review complete subtitles, authors and images before any merge. Actual cover text can expose a missing title word (Zarkadakis *In Our Own Image*); it does not justify combining a different author's similarly named book.
+
 **Lesson from the2November2026 psychiatric-title correction:** matching an older supplied link proves what that link identifies, not necessarily the user’s intended reading entry. The user explicitly corrected493 to Letheby/Gerrans’s *Philosophical Perspectives on Psychedelic Psychiatry* and confirmed merging492. When changing to a different work, do not fill the corrected record’s blank ISBN/year/pages/publisher from the rejected work. Preserve those facts only in the exact original archive. This supersedes the historical Sadler identification example below.
 
 **Clarification follow-up, 2 November2026:** the user subsequently explicitly confirmed that Mysticism428 and Paul Oliver427 are one book. They are now combined as428, read28November2025. The conditional-date example below is historical, not an open question. Consult the [answer-by-answer audit](_build/clarification_audit_20261102/README.md) before re-asking any previous clarification.
