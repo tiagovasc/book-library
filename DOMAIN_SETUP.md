@@ -2,6 +2,8 @@
 
 New library addresses: **https://tiagobooks.com/** and **https://www.tiagobooks.com/**.
 
+**Verified live,2November2026:** both return the library over certificate-validated HTTPS; Railway reports ownership verified and certificates VALID. Both serve the same977books/revision38 as the original app, load covers/login and reject anonymous saves (401). Native Chrome rendered the library at tiagobooks.com. The apex ALIAS may still produce a generic CNAME warning in Railway’s routing display; actual ownership, certificate and HTTPS checks passed. Evidence: `_build/domain_20261102/verification.json`, `application-verification.json` and `live-tiagobooks.png`.
+
 Existing fallback remains https://book-library-production-4bee.up.railway.app/. All addresses use the same Railway service and hosted Supabase library; no copy, migration or reseeding of book data is needed. The same editing password applies; an editing session must be opened separately on a new hostname.
 
 ## What changed and why

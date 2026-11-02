@@ -1,5 +1,7 @@
 # Tiago’s Library — changelog
 
+**Custom-domain completion,2November2026:** tiagobooks.com and www both verified live with valid HTTPS certificates and identical977-book/revision38 data. Covers/login load, anonymous saves remain401, native Chrome rendering verified. Set tiagobooks.com as the primary documented public address; retained Railway fallback and unchanged email settings. Certificate ownership TXT records were required in addition to traffic routes; do not assume a CNAME alone completes setup.
+
 **2November2026 — custom domain:** inspected tiagobooks.com in Namecheap and found root/www redirects to an unused Medium blog. User explicitly approved replacement. Bound both hostnames to the existing Railway library, replaced redirects with root ALIAS and www CNAME, and added Railway ownership TXT records; email forwarding/SPF unchanged. No book data moved or reseeded. Setup/rollback: [DOMAIN_SETUP.md](DOMAIN_SETUP.md); actual DNS/certificate/live response outcomes: `_build/domain_20261102/verification.json`.
 
 ## 2026-11-02 — Separate first-20 bookshop metadata trial

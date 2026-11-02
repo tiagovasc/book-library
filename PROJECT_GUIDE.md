@@ -10,6 +10,8 @@ Current decisions and operating rules, consolidated 1 November 2026. Full-chat c
 
 ## Live app and source of truth
 
+- **Primary public URL, verified2November2026: https://tiagobooks.com/**. https://www.tiagobooks.com/ also works over valid HTTPS. Same977-book hosted library/revision38 at verification; anonymous saves remain password-protected. Existing Railway URL remains a fallback.
+
 - Custom domain setup,2November2026: [DOMAIN_SETUP.md](DOMAIN_SETUP.md) documents tiagobooks.com and www, replacing the explicitly retired Medium redirects. The existing Railway URL below remains a fallback; use the domain verification receipt to distinguish configured DNS from confirmed public HTTPS readiness. Same service/data/editing password; email settings preserved.
 
 - Public library: https://book-library-production-4bee.up.railway.app/
