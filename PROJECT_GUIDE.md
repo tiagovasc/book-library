@@ -101,6 +101,8 @@ For future enrichment, follow `_build/metadata_enrichment/README.md` and its cam
 
 ## Interface decisions
 
+- Favicon,2November2026: `favicon.svg`, `favicon.ico` and `apple-touch-icon.png` reuse the existing three-book brand mark. The server explicitly serves these files with image MIME types; preserve the narrow asset allowlist.
+
 - **Cover hover, 1 November 2026:** fine-pointer hover adds a restrained sage rim/glow, 3px cover lift and 1.2% scale over 240ms. Text/stars stay fixed; list/table covers use a smaller response. Keyboard focus receives the same quiet glow. Touch devices avoid sticky hover, and reduced-motion settings disable transforms. CSS only; no pointer-tracking or scrolling work. Exact pre-change code and receipt: `_build/hosted_library_20261101/before-cover-hover-index.html` and `cover-hover-release.json`.
 
 - Keep the muted accents, library icon and dot-matrix year branding. The header follows appearance: white with dark text in light mode, black with light text in dark mode. The former always-black header rule was superseded by the user on2November2026.

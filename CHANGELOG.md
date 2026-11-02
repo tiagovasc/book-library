@@ -1,5 +1,7 @@
 # Tiago’s Library — changelog
 
+**2November2026 — favicon:** reused the existing sage/gold/lavender three-book logo on a dark rounded tile. Added SVG favicon,16/32/48px ICO fallback and180px Apple touch icon; explicitly allowed these asset routes with matching MIME types. No library data changed.
+
 **2November2026 — public repository:** changed tiagovasc/book-library from private to public at the user’s request and linked tiagobooks.com as its homepage. Before publication, scanned all30 commits/76 non-image blobs (about39.6MB), checked actual library credential values plus common secret patterns, verified internal tooling/credential/backup files were excluded and confirmed main was the only remote branch/tag. No credential matches found. Verified anonymous GitHub access; application data/authentication unchanged. Evidence: `_build/public_repo_20261102/audit.json` and `published.json`.
 
 **2November2026 — visible sort/filter state:** added sage active outlines, a sort dot, filter count and removable chips naming the selected sort/filter values. Individual chips reset only their own setting; combined reset preserves the current reading-status tab. Contextual default is date-read newest, or recently acquired for Unread. Verified actual renderer/event handlers for defaults, safe labels/counts, independent resets and Unread behavior. No book data changed. Evidence: `_build/active_controls_20261102/verification.json`.
@@ -108,3 +110,16 @@ Expanded phone shelves to full width; two cover columns (three on wider phones/s
 **Completed 2 November 2026 — records 71–170:** 100 records processed; 77 catalogue matches, 66 accepted cover attachments, 23 unresolved identities and 11 additional cover gaps. All 65 JEV-selected actual images were inspected; two wrong-language choices were corrected using existing/cached evidence and another language conflict held unresolved. All five duplicate-image pairs represent the same work in separate photos; none merged. Source CSV and all original records unchanged. Edition details remain catalogue evidence, not verified photographed editions. No personal-library/hosted changes. Next unprocessed record:171. Starting weekly meter21% (user report); ending meter unavailable.
 
 Campaign: `Meaning/Books/Dashboard/_build/metadata_enrichment/bookshop_next100_20261102/README.md`. Across all three passes:170 records processed,142 catalogue matches,122 accepted cover attachments,28 unresolved identities.
+
+
+## 2 November 2026: all 819 bookshop metadata records processed
+
+Completed the remaining 649 post-JEV single-book records (171-819): **550 catalogue matches, 478 accepted covers, 99 unresolved matches and 72 other cover gaps**. All 649 catalogue/JEV calls finished before corrections. One bounded retrieval pass; no repeated recovery searches.
+
+Across all four campaigns: **819 processed, 692 catalogue matches, 600 accepted covers, 127 unresolved matches and 92 metadata-only cover gaps**. These are photo records, including repeat photos of the same book; they are not a count of unique works.
+
+[Search all records](../Bookshop trips/Book-metadata.html) | [Complete CSV](../Bookshop trips/books-metadata.csv) | [Complete JSON](../Bookshop trips/books-metadata.json) | [127 unresolved matches](../Bookshop trips/metadata-needs-research.csv) | [92 cover gaps](../Bookshop trips/metadata-cover-gaps.csv) | [Campaign evidence](_build/metadata_enrichment/bookshop_remaining_20261102/README.md).
+
+All 475 JEV-selected actual images in the remaining campaign were visually inspected, plus 26 none-case image assets and seven alternative assets. Wrong-language, wrong-volume, audiobook, interior-page and placeholder assets were held or replaced using existing evidence. Six incompatible Open Library edition-detail responses were excluded from accepted bibliography; raw receipts remain. All 600 final cover hashes and image decodes, original-row equality, 819 unique photo IDs and report links passed verification. Sixty-six duplicate-similarity pairs were reviewed; separate photo records remain intact. Catalogue editions and cover artwork do not establish the exact edition photographed. Original source CSV unchanged; no personal-library or hosted changes.
+
+This completion supersedes earlier metadata in-progress/next-record notices without removing their history. **No unprocessed single-book rows remain in the frozen 819-row source.** Continue only from the explicit unresolved/cover-gap lists, with fresh authorization for further external research. Original extraction uncertainties (including the 23 extra extraction checks) remain separate and are not claimed resolved by catalogue enrichment. User reported weekly usage still 21% at campaign start; ending meter unavailable, no usage delta inferred.
