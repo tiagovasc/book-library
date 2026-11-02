@@ -147,3 +147,6 @@ Only two catalogue matches remain unconfirmed: record15, *Michelangelo* (Scripta
 ### 2 November 2026: Goodreads native-browser follow-up
 
 Found record603 by searching Kate Lister: the photographed title is **FLICK: The Story of Female Pleasure**, not Flux. Corrected resolved metadata and added a visually checked compatible cover; original extraction preserved. Goodreads catalogue edition facts are explicitly DIGITAL/Kindle and do not identify the photographed print edition. Michelangelo remains unresolved: Fabio Scaletti’s Slovenian Michelangelo, velikan: 500 let is an unconfirmed lead with different binding. Current totals: **819 photos,818 catalogue matches,788 covers,1 unmatched,30 matched without cover**. This supersedes the preceding two-unmatched counts. Source/old-new deltas, five immediate pre-follow-up exports and validation are retained as goodreads-* files in the recovery evidence folder. No personal-library or hosted edits.
+
+
+**2 November 2026 — TBR text overlap fix:** author and copy spans now form width-constrained blocks, so long credits truncate inside their own cards instead of overlapping neighbors. Photo dates have a separate block and spacing. List rows use explicit cover/copy/place grid positions on desktop and mobile. DOM interaction regression passed; visual rendering not independently verified.

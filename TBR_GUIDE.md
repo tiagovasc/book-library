@@ -27,3 +27,6 @@ There are **725 entries with covers**, **28 without**, and **one unresolved iden
 Import Instagram and Online only when requested, from the source projects linked in `../TBR list.md`. Preserve interests separately from purchases and completed reads. Reconcile works against existing TBR sources rather than duplicating them, retain source memberships and dates, and repeat manual review of ambiguous matches. Do not run old personal-library seed/merge scripts to import TBR.
 
 Rollback: revert the TBR release commit and redeploy. The personal-library database needs no rollback because this feature does not write to it.
+
+
+**2 November 2026 — TBR text overlap fix:** author and copy spans now form width-constrained blocks, so long credits truncate inside their own cards instead of overlapping neighbors. Photo dates have a separate block and spacing. List rows use explicit cover/copy/place grid positions on desktop and mobile. DOM interaction regression passed; visual rendering not independently verified.

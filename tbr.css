@@ -22,11 +22,12 @@ body.tbr-mode #tbrMain{display:block;margin-left:var(--books-left,24px);width:va
 .tbr-cover img{display:block;width:100%;height:100%;object-fit:cover;object-position:center}
 .tbr-placeholder{font:500 15px/1.4 var(--display);padding:18px;text-align:center;color:var(--muted)}
 .tbr-book h3{font:600 14px/1.35 var(--sans);margin:14px 0 4px;height:2.7em;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;overflow-wrap:anywhere}
-.tbr-author{height:1.4em;margin:0 0 10px;font-size:13px;line-height:1.4;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.tbr-place{font-size:12px;line-height:1.45;color:var(--muted);display:block;min-width:0}
+.tbr-copy{display:block;min-width:0;width:100%}
+.tbr-author{display:block;width:100%;min-width:0;height:1.4em;margin:0 0 10px;font-size:13px;line-height:1.4;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tbr-place{font-size:12px;line-height:1.45;color:var(--muted);display:block;min-width:0;max-width:100%}
 .tbr-city,.tbr-shop{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .tbr-city{color:var(--ink)}
-.tbr-date{margin-top:8px;font-size:11px;color:var(--faint);font-variant-numeric:tabular-nums}
+.tbr-date{display:block;margin-top:8px;font-size:11px;color:var(--faint);font-variant-numeric:tabular-nums}
 .tbr-section{margin-bottom:42px;content-visibility:auto;contain-intrinsic-size:auto 500px}
 .tbr-heading{display:flex;gap:16px;align-items:center;margin-bottom:24px}
 .tbr-heading h3{font:500 14px/1.4 var(--sans);margin:0;color:var(--ink)}
@@ -35,7 +36,9 @@ body.tbr-mode #tbrMain{display:block;margin-left:var(--books-left,24px);width:va
 .tbr-more{text-align:center;margin:32px 0}
 .tbr-list{display:flex;flex-direction:column;gap:0}
 .tbr-list .tbr-book{display:grid;grid-template-columns:58px minmax(0,1fr) minmax(120px,.55fr);gap:18px;align-items:center;padding:18px 0;border-bottom:1px solid var(--line)}
-.tbr-list .tbr-cover{width:58px;grid-row:1/4}
+.tbr-list .tbr-cover{width:58px;grid-column:1;grid-row:1}
+.tbr-list .tbr-copy{grid-column:2;grid-row:1}
+.tbr-list .tbr-place{grid-column:3;grid-row:1}
 .tbr-list .tbr-copy h3{height:auto;margin:0 0 6px}
 .tbr-list .tbr-author{margin-bottom:0}
 .tbr-list .tbr-date{margin-top:6px}
@@ -71,7 +74,7 @@ body.tbr-mode #tbrMain{display:block;margin-left:var(--books-left,24px);width:va
  .tbr-intro{align-items:flex-start;margin-bottom:24px;flex-direction:column;gap:12px}
  .tbr-intro h2{font-size:26px}.tbr-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:30px 20px}
  .tbr-toolbar{display:grid;grid-template-columns:1fr;gap:10px}.tbr-toolbar select{width:100%;min-height:44px}
- .tbr-list .tbr-book{grid-template-columns:48px minmax(0,1fr);gap:12px}.tbr-list .tbr-cover{width:48px;grid-row:1/3}.tbr-list .tbr-place{grid-column:2}.tbr-list .tbr-author{height:auto;white-space:normal}
+ .tbr-list .tbr-book{grid-template-columns:48px minmax(0,1fr);gap:8px 12px}.tbr-list .tbr-cover{width:48px;grid-row:1/3}.tbr-list .tbr-place{grid-column:2;grid-row:2}.tbr-list .tbr-author{height:auto;white-space:normal;overflow-wrap:anywhere}
  .tbr-detail{padding:20px}.tbr-detail img{max-width:110px;max-height:165px;margin-right:18px}.tbr-detail h2{font-size:21px}
 }
 @media(prefers-reduced-motion:reduce){.tbr-cover{transition:none}.tbr-book:hover .tbr-cover{transform:none}}
