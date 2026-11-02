@@ -10,6 +10,8 @@ Current decisions and operating rules, consolidated 1 November 2026. Full-chat c
 
 ## Live app and source of truth
 
+- Custom domain setup,2November2026: [DOMAIN_SETUP.md](DOMAIN_SETUP.md) documents tiagobooks.com and www, replacing the explicitly retired Medium redirects. The existing Railway URL below remains a fallback; use the domain verification receipt to distinguish configured DNS from confirmed public HTTPS readiness. Same service/data/editing password; email settings preserved.
+
 - Public library: https://book-library-production-4bee.up.railway.app/
 - Private deployable source: https://github.com/tiagovasc/book-library
 - Railway serves the frontend, backend and cover files. Supabase’s existing shared **LLM Project Hub** stores the hosted library in the prefixed `book_library_state` table. Do not create a separate Supabase project.
