@@ -1,5 +1,7 @@
 # Tiago’s Library — changelog
 
+**Latest update, 2 November2026 — clarification audit:** revisited every identification/duplicate/ownership answer in this chat and inspected the associated covers;24 live image hashes matched. The outstanding read-list case was Mysticism428/R.Otto versus Paul Oliver427. After the user explicitly confirmed they are one book, combined them as428, correctly titled/credited to Paul Oliver with the existing verified cover. Preserved read28November2025, personal rating, ownership, purchase evidence, both original records and427 alias. Fresh hosted35→36; current979books,238unread,957covers/22missing;978 unrelated records unchanged. Other definite answers matched; “skip/check later/probably” cases remain distinguished in the [full audit](_build/clarification_audit_20261102/README.md). Prior counts and pending-Mysticism notes below are historical.
+
 Consolidated 1 November 2026 from this entire chat and saved project receipts. Phases below are chronological; the verified implementation checkpoints are dated 1 November. Individual chat messages do not provide separate dates, so no earlier dates or exact times are inferred. This continues an existing library, rather than claiming it was created in this chat.
 
 ## Latest verified checkpoint

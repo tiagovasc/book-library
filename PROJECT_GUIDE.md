@@ -1,5 +1,7 @@
 # Tiago’s Library — current project guide
 
+**Latest clarification correction, 2 November2026:** user explicitly confirmed Mysticism428/427 is Paul Oliver’s *Mysticism: A Guide for the Perplexed*.428 is the read survivor (28November2025),427 its alias; ownership/cover/purchase evidence retained. The earlier R.Otto attribution is archived, not current. **979books,238unread,957covers/22missing; revision36.** All earlier counts and pending-Mysticism statements below are superseded checkpoints. Full answer-by-answer audit: [_build/clarification_audit_20261102/README.md](_build/clarification_audit_20261102/README.md).
+
 Current decisions and operating rules, consolidated 1 November 2026. Full-chat chronology: [CHANGELOG.md](CHANGELOG.md). Latest verified state: **980 books; 239 unread (all owned); 957 covers / 23 missing; hosted revision 16**. Earlier counts below and in campaign reports are historical checkpoints.
 
 ## Live app and source of truth
