@@ -150,3 +150,6 @@ Found record603 by searching Kate Lister: the photographed title is **FLICK: The
 
 
 **2 November 2026 — TBR text overlap fix:** author and copy spans now form width-constrained blocks, so long credits truncate inside their own cards instead of overlapping neighbors. Photo dates have a separate block and spacing. List rows use explicit cover/copy/place grid positions on desktop and mobile. DOM interaction regression passed; visual rendering not independently verified.
+
+
+**2 November 2026 — TBR infinite scrolling:** the next48 books append automatically within1000px of the end in covers, list and table views. Existing cards/rows remain in place; visit groups continue across batch boundaries without duplicate headings. Filters/search reset the batch; loading stops at the final book. A Load more button remains as an accessible/manual fallback. Sixteen server/data tests pass; public/admin DOM checks exercised automatic48→96→753 loading, unique IDs and original-node preservation, plus navigation/filter/layout regressions.

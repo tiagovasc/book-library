@@ -34,6 +34,7 @@ body.tbr-mode #tbrMain{display:block;margin-left:var(--books-left,24px);width:va
 .tbr-heading span{font-size:12px;color:var(--muted)}
 .tbr-heading::after{content:'';flex:1;border-top:1px dotted var(--line-2)}
 .tbr-more{text-align:center;margin:32px 0}
+.tbr-more>span{display:block;margin:0 0 12px;font-size:12px;color:var(--muted)}
 .tbr-list{display:flex;flex-direction:column;gap:0}
 .tbr-list .tbr-book{display:grid;grid-template-columns:58px minmax(0,1fr) minmax(120px,.55fr);gap:18px;align-items:center;padding:18px 0;border-bottom:1px solid var(--line)}
 .tbr-list .tbr-cover{width:58px;grid-column:1;grid-row:1}
