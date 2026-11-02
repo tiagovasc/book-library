@@ -1,5 +1,7 @@
 # Tiago’s Library — current project guide
 
+**Production pass, 2 November 2026 (code ready, not deployed):** see the section at the end of this guide and `_build/mvp_to_prod_20261102/README.md`.
+
 **Repository visibility,2November2026:** https://github.com/tiagovasc/book-library is now **public**, following the user’s request. Scanned all30 pre-publication commits/76 non-image blobs for known library credentials and common secret patterns; no matches or internal credential/backup paths found. Verified public access without authentication. Continue publishing only the curated release; `_build/`, credentials and backups remain excluded. Internal evidence: `_build/public_repo_20261102/`.
 
 **Sort/filter state,2November2026:** non-default sort has a sage outline/dot and a removable Sort chip; active advanced filters have an outlined Filters button/count and individually removable value chips. Reset sorting alone preserves search/filters and returns to date-read newest, or recently acquired in Unread. Reset sort & filters clears search/advanced filters/custom sort while preserving the selected reading-status tab. Default sort has no active cue. Source/evidence: `_build/active_controls_20261102/verification.json`.
@@ -128,3 +130,15 @@ Preserve this guide, the Dashboard README, enrichment guide and dated changelog 
 ## Mobile browsing — 2 November 2026
 
 At widths up to760px, keep full-width shelves (two columns; three from540px), readable search and touch-sized browsing controls. Keep status/filter/sort controls available on scroll; desktop hover-only expansion must not hide them on phones. Replace the narrow side date rail with a bottom dock and native month picker, hidden for acquisition sorting as before. Reserve safe-area/bottom clearance. Popovers scroll within the available viewport; tables scroll inside their own container; details fill the dynamic viewport with44px navigation/close targets. Cover stars remain aligned with24px-wide buttons on the narrowest cards. Group jump offsets account for the header once, avoiding double scroll-padding. Desktop rail/grid and hosted data remain unchanged. Verification and exact before-code: `_build/mobile_20261102/verification.json` and `before-index.html`. Phone-width browser testing is not a physical-device test.
+
+## Production pass, 2 November 2026
+
+Operating rules introduced by the MVP to production pass (record and evidence: `_build/mvp_to_prod_20261102/`):
+
+- **Cover renditions.** Browsing and the book drawer load `covers/web/<same name>.jpg` (long edge 640 px, progressive JPEG). Originals in `covers/` are never modified and remain the automatic fallback (`data-full`) and the source for duplicate audits and exports. After adding or replacing any cover, run `python _build/mvp_to_prod_20261102/make_web_covers.py` from this folder before publishing; it skips up-to-date files. The release repository must include `covers/web/`.
+- **Hosted page and embedded copy.** `index.html` on disk keeps its embedded `SEED` copy (local launcher and offline mode need it). `server.mjs` removes it when serving the hosted page, so hosted behaviour never depends on that old snapshot. Do not re-enable "Restore built-in library" on the hosted site: it would save an old snapshot over the hosted library.
+- **Server safeguards.** `/save` refuses an empty library or one that removes more than half of a library of 20 or more books (`plausibleSave`). Every storage call has a 10 second timeout. Conditional responses use ETag; `books.json` is keyed to the stored revision. Only failed logins count toward the login limit.
+- **Contrast.** Light `--faint` and `--muted` and dark `--faint` were raised to at least 4.5:1; keep new text colours at that level. Header focus rings use `--n-ink`, never white.
+- **Book links and Back.** Opening a book pushes `#book/<id>`; Back closes it; stepping between books replaces the entry. Keep this when changing the drawer.
+- **Tests.** `npm test` runs `test-server.mjs` and `test-server-prod.mjs` (12 tests). The browser checks and measurement scripts are in `_build/mvp_to_prod_20261102/tools/` and use a mock storage server, never the hosted library.
+- **Awaiting decisions and deployment actions:** listed in the pass README (share image and indexing, proxy-aware login limit, smaller saves, HSTS, URL-persisted filters and others).

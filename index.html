@@ -5,6 +5,10 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="color-scheme" content="light dark">
 <title>Tiago's Library</title>
+<meta name="description" content="Tiago's personal library: every book bought and read, with covers, ratings and reading dates.">
+<link rel="canonical" href="https://tiagobooks.com/">
+<meta property="og:type" content="website"><meta property="og:site_name" content="Tiago's Library"><meta property="og:title" content="Tiago's Library"><meta property="og:description" content="Every book bought and read, with covers, ratings and reading dates."><meta property="og:url" content="https://tiagobooks.com/"><meta name="twitter:card" content="summary">
+<meta name="theme-color" content="#EDEDEA" media="(prefers-color-scheme: light)"><meta name="theme-color" content="#000000" media="(prefers-color-scheme: dark)">
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <link rel="icon" href="/favicon.ico" sizes="16x16 32x32 48x48">
 <link rel="apple-touch-icon" href="/apple-touch-icon.png" sizes="180x180">
@@ -506,6 +510,46 @@ body.has-timeline .wrap{margin-left:250px;width:calc(100% - 290px);max-width:136
   .n-main .search{grid-column:1;grid-row:2}
   .n-main #viewSwitch{grid-column:2;grid-row:2;justify-self:end}
 }
+
+/* ===== Production pass, 2 November 2026 (appended so every earlier rule stays as the rollback reference) ===== */
+/* Text contrast: the faint and muted greys fell below 4.5:1 on the page and card backgrounds. */
+:root{--muted:#5A5A5F;--faint:#6C6C71}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--faint:#8A8A90}}
+:root[data-theme="dark"]{--faint:#8A8A90}
+/* Header leftovers from the dark-only header: focus rings, borders and accents that were white on the now-white light header. */
+.lib-title:focus{box-shadow:0 0 0 2px color-mix(in srgb,var(--n-ink) 30%,transparent)}
+.search:focus-within,.pill-select:focus-within{box-shadow:0 0 0 2px color-mix(in srgb,var(--n-ink) 45%,transparent)}
+.kbd,.keys kbd{border-color:var(--n-line)}
+.linkbtn{text-decoration-color:color-mix(in srgb,var(--n-ink) 40%,transparent)}
+.column-options input{accent-color:var(--n-ink)}
+.badge{background:var(--n-ink);color:var(--n-bg)}
+.m-item.danger{color:#B4343A}
+:root[data-theme="dark"] .m-item.danger{color:#F0A49F}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .m-item.danger{color:#F0A49F}}
+/* Search clear button (the native one is hidden) */
+.search-clear{display:inline-grid;place-items:center;flex:none;width:24px;height:24px;border:0;border-radius:50%;background:transparent;color:var(--n-muted);font-size:18px;line-height:1;padding:0}
+.search-clear:hover{background:var(--n-fill-2);color:var(--n-ink)}
+.search.has-text .kbd{display:none}
+/* Pressed states and tap feedback */
+button,a,select,summary,[role="button"]{-webkit-tap-highlight-color:transparent}
+.round,.nbtn,.seg button,.details-btn,.mini-link,.dseg button,.own,.m-item{transition:background-color .15s,color .15s,transform .12s}
+.round:active,.nbtn:active,.seg button:active,.details-btn:active,.mini-link:active,.dseg button:active,.own:active,.m-item:active,.to-top:active{transform:scale(.96)}
+.tile:active .cv{transform:scale(.985)}
+/* Covers sit on a soft tile while they load, so nothing is blank and nothing jumps */
+.tile .cv,.l-cv,.tcover{background:color-mix(in srgb,var(--sunk) 70%,transparent)}
+/* First paint: a quiet skeleton shelf while the library loads */
+.boot-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(146px,1fr));gap:40px 28px;margin-top:8px}
+.boot-card{aspect-ratio:2/3;border-radius:3px;background:var(--sunk);animation:boot-pulse 1.4s ease-in-out infinite}
+.boot-card:nth-child(3n+2){animation-delay:.15s}.boot-card:nth-child(3n){animation-delay:.3s}
+@keyframes boot-pulse{50%{opacity:.45}}
+@media(max-width:760px){.boot-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:28px 16px}}
+/* Back to top */
+.to-top{position:fixed;z-index:30;right:24px;bottom:24px;display:grid;place-items:center;width:44px;height:44px;border-radius:50%;border:0;background:var(--surface);color:var(--ink);box-shadow:0 0 0 1px var(--line-2),0 10px 24px -10px rgba(0,0,0,.35);transition:transform .12s,opacity .2s}
+.to-top:hover{background:var(--surface-2)}
+@media(max-width:760px){.to-top{right:16px;bottom:calc(16px + env(safe-area-inset-bottom))}body.has-timeline .to-top{bottom:calc(86px + env(safe-area-inset-bottom))}}
+/* Visitors see book details as plain text, not editable-looking fields */
+.public-library .in:hover{background:transparent}
+.public-library .in-title,.public-library .in-author{cursor:default}
 </style>
 </head>
 <body>
@@ -532,6 +576,7 @@ body.has-timeline .wrap{margin-left:250px;width:calc(100% - 290px);max-width:136
     <label class="search">
       <svg class="i" aria-hidden="true"><use href="#i-search"/></svg>
       <input id="search" type="search" placeholder="Search title, author, subject, notes" autocomplete="off" spellcheck="false" aria-label="Search books">
+      <button type="button" class="search-clear" id="searchClear" aria-label="Clear search" hidden><span aria-hidden="true">&times;</span></button>
       <kbd class="kbd" aria-hidden="true">/</kbd>
     </label>
     <div class="seg views" id="viewSwitch" role="group" aria-label="Layout">
@@ -619,8 +664,9 @@ body.has-timeline .wrap{margin-left:250px;width:calc(100% - 290px);max-width:136
 </header>
 
 <main class="wrap" id="main">
+  <noscript><div class="empty-state"><h2>JavaScript is needed</h2><p>This library loads its books in the browser. Turn on JavaScript to browse it.</p></div></noscript>
   <div class="results" id="results" hidden></div>
-  <div id="content"></div>
+  <div id="content" aria-busy="true"><div class="boot-grid" role="status" aria-label="Loading the library"><span class="boot-card"></span><span class="boot-card"></span><span class="boot-card"></span><span class="boot-card"></span><span class="boot-card"></span><span class="boot-card"></span><span class="boot-card"></span><span class="boot-card"></span><span class="boot-card"></span><span class="boot-card"></span><span class="boot-card"></span><span class="boot-card"></span></div></div>
   <div class="empty-state" id="empty" hidden>
     <h2 id="emptyTitle">No books match</h2>
     <p id="emptyText">Try another word, or clear the search and filters.</p>
@@ -631,6 +677,7 @@ body.has-timeline .wrap{margin-left:250px;width:calc(100% - 290px);max-width:136
 </main>
 
 <datalist id="subjectList"></datalist>
+<button class="to-top" id="toTop" type="button" aria-label="Back to top" title="Back to top" hidden><svg class="i" aria-hidden="true" viewBox="0 0 20 20"><path d="M5 12l5-5 5 5"/></svg></button>
 
 <dialog class="drawer" id="drawer" aria-labelledby="dTitleLabel">
   <div class="d-bar">
@@ -699,7 +746,7 @@ var SEED = [{"id":"1","tags":["biography","audiobooks"],"cover":"covers/cover_1.
 
   // ---------- persistence ----------
   function serialize(){return JSON.stringify(state.books.map(function(b){var baseline=originalBooks.get(b);if(!baseline)return b;var raw=JSON.parse(JSON.stringify(baseline.raw));Object.keys(b).forEach(function(k){if(JSON.stringify(b[k])!==JSON.stringify(baseline.normalized[k]))raw[k]=b[k];});return raw;}),null,2);}            // canonical = bare array
-  function scheduleSave(){ if(saveTimer)clearTimeout(saveTimer); saveTimer=setTimeout(saveNow,400); }
+  function scheduleSave(){ if(saveTimer)clearTimeout(saveTimer); saveTimer=setTimeout(function(){saveTimer=null;saveNow();},400); }
   function saveNow(){
     try{ localStorage.setItem(STORAGE_KEY, JSON.stringify({title:state.title,books:state.books})); }catch(e){}
     if(SERVER_MODE){ saveToServer(); return; }
@@ -713,8 +760,8 @@ var SEED = [{"id":"1","tags":["biography","audiobooks"],"cover":"covers/cover_1.
       if(window.CLOUD_LIBRARY&&!serverRevision)throw new Error('Reload the library before saving.');
       var headers={"Content-Type":"application/json"};if(serverRevision)headers['X-Library-Revision']=serverRevision;
       return fetch("/save",{method:"POST",headers:headers,body:snapshot});
-    }).then(function(r){ if(!r.ok){if(r.status===409){serverRevision=null;throw new Error('Another session changed the library. Export your changes, then reload.');}throw new Error('Could not save. Your changes remain in this browser.');} serverRevision=r.headers.get('X-Library-Revision')||serverRevision;serverSaveState="saved";saveFailed=false;renderFileStatus(); })
-      .catch(function(error){serverSaveState="error";renderFileStatus();toast(error.message);});
+    }).then(function(r){ if(!r.ok){return r.json().catch(function(){return {};}).then(function(d){if(r.status===409){serverRevision=null;throw new Error('Another session changed the library. Export your changes, then reload.');}if(r.status===401)throw new Error('Your admin session ended. Sign in again, then repeat the change.');throw new Error(r.status===400&&d&&d.error?d.error:'Could not save. Your changes remain in this browser.');});} serverRevision=r.headers.get('X-Library-Revision')||serverRevision;serverSaveState="saved";saveFailed=false;renderFileStatus(); })
+      .catch(function(error){serverSaveState="error";renderFileStatus();toast(error.message,7000);});
   }
   function writeToFile(announce){
     if(!fileHandle) return;
@@ -783,6 +830,7 @@ var SEED = [{"id":"1","tags":["biography","audiobooks"],"cover":"covers/cover_1.
   function applyImported(txt){
     try{ var d=JSON.parse(txt); var books=Array.isArray(d)?d:(d&&d.books);
       if(!Array.isArray(books)){ toast("That file didn't contain a library."); return; }
+      if(state.books.length&&!confirm("Replace the "+fmtN(state.books.length)+" books in this library with the "+fmtN(books.length)+" in this file?"+(window.CLOUD_LIBRARY?" The change is saved online right away.":""))) return;
       state.books=books.map(normalize); if(d&&typeof d.title==="string") state.title=d.title;
       reindex(); buildFilters(); renderAll(); saveNow(); toast("Imported "+books.length+" books");
     }catch(e){ toast("Couldn't read that file as JSON."); }
@@ -942,7 +990,9 @@ var SEED = [{"id":"1","tags":["biography","audiobooks"],"cover":"covers/cover_1.
   var TONES=["read","reading","next","unread","paused","unknown"];
   function toneOf(s){ var h=0; s=String(s||""); for(var i=0;i<s.length;i++) h=(h*31+s.charCodeAt(i))|0; return TONES[Math.abs(h)%TONES.length]; }
   function placeholderHTML(b){ return '<span class="ph" style="--tone:var(--t-'+toneOf(b.title)+')"><span class="ph-t">'+esc(splitTitle(b.title)[0]||"Untitled")+'</span><span class="ph-a">'+esc(b.author||"")+'</span></span>'; }
-  function coverHTML(b){ return b.cover?'<img class="cv-img" src="'+esc(b.cover)+'" alt="" loading="lazy" decoding="async">':placeholderHTML(b); }
+  // Browsing uses a 640 px rendition (covers/web/); the original stays as the fallback and for any cover without one.
+  function webCover(c){ var m=/^covers\/([^\/]+?)(?:\.[A-Za-z0-9]+)?$/.exec(c||""); return m?"covers/web/"+m[1]+".jpg":c; }
+  function coverHTML(b){ return b.cover?'<img class="cv-img" src="'+esc(webCover(b.cover))+'" data-full="'+esc(b.cover)+'" alt="" loading="lazy" decoding="async">':placeholderHTML(b); }
   // Every cover box is 2:3. Scale each cover to the largest size that fits the box at its own
   // proportions (small thumbnails grow, wide covers stay wide), standing on the box's bottom edge.
   function fitCover(img){ var w=img.naturalWidth, h=img.naturalHeight; if(w&&h) img.style.width=Math.min(100,150*w/h).toFixed(2)+"%"; img.classList.add("ok"); }
@@ -950,6 +1000,7 @@ var SEED = [{"id":"1","tags":["biography","audiobooks"],"cover":"covers/cover_1.
   function onImgLoad(e){ if(e.target.tagName==="IMG"&&e.target.classList.contains("cv-img")) fitCover(e.target); }
   function onImgError(e){
     var t=e.target; if(t.tagName!=="IMG") return;
+    var full=t.getAttribute("data-full"); if(full&&t.getAttribute("src")!==full){ t.setAttribute("src",full); return; }
     var host=t.closest("[data-id]"), b=(host&&findBook(host.getAttribute("data-id")))||dBook||{title:"",author:""};
     var tmp=document.createElement("div"); tmp.innerHTML=placeholderHTML(b); t.replaceWith(tmp.firstChild);
   }
@@ -991,7 +1042,7 @@ var SEED = [{"id":"1","tags":["biography","audiobooks"],"cover":"covers/cover_1.
   var COLUMN_KEY="tiago-books-columns-v1";
   var COLUMNS=[
     ["cover","Cover",62],["title","Title",300],["author","Author",145],["read_status","Status",116],
-    ["date_read","Date read",118],["acquisition_order","Acquisition order",130],["acquired_date","Acquired (approx.)",140],["goodreads_date_added","Goodreads added",140],["acquisition_basis","Order basis",150],["owned","Bought",88],["rating","Rating",108],["subject","Subject",120],["notes","Notes",190],
+    ["date_read","Date read",118],["acquisition_order","Acquisition order",130],["acquired_date","Acquired (approx.)",140],["goodreads_date_added","Goodreads added",140],["acquisition_basis","Order basis",150],["owned","Bought",88],["rating","Rating",126],["subject","Subject",120],["notes","Notes",190],
     ["subtitle","Subtitle",260],["additional_authors","Additional authors",200],["format","Format",120],["pages","Pages",85],
     ["publication_year","Publication year",125],["publisher","Publisher",190],["isbn13","ISBN",150],["description","Description",300],
     ["tags","Tags",180],["sources","Sources",170],["notes_url","Notes link",190],["review_url","Review link",190],
@@ -1005,7 +1056,7 @@ var SEED = [{"id":"1","tags":["biography","audiobooks"],"cover":"covers/cover_1.
   function renderColumnPicker(){
     $("columnOptions").innerHTML=COLUMNS.map(function(c){return '<label><input type="checkbox" data-column="'+c[0]+'"'+(visibleColumns.indexOf(c[0])>=0?' checked':'')+'>'+esc(c[1])+'</label>';}).join("");
   }
-  function saveColumns(){try{localStorage.setItem(COLUMN_KEY,JSON.stringify(visibleColumns));}catch(e){}renderColumnPicker();if(ui.view==="table"){renderView(false);var sc=content.querySelector(".scroll");if(sc)sc.scrollLeft=0;}}
+  function saveColumns(){try{localStorage.setItem(COLUMN_KEY,JSON.stringify(visibleColumns));}catch(e){}renderColumnPicker();if(ui.view==="table"){renderView(true);var sc=content.querySelector(".scroll");if(sc)sc.scrollLeft=0;}}
   function renderColumnHeaders(){
     var cols=selectedColumns();
     $("bookColumns").innerHTML='<col style="width:5px">'+cols.map(function(c){return '<col style="width:'+c[2]+'px">';}).join("")+'<col style="width:110px">';
@@ -1038,7 +1089,11 @@ var SEED = [{"id":"1","tags":["biography","audiobooks"],"cover":"covers/cover_1.
   var content=$("content"), sentinel=$("sentinel");
   var PAGE={covers:60,list:50,table:50};
   var view={list:[],rendered:0,key:null,box:null,counts:{}};
+  var loadFailed=false;
+  function syncSearchClear(){ var has=!!$("search").value; $("searchClear").hidden=!has; $("search").closest(".search").classList.toggle("has-text",has); }
   function renderView(keep){
+    if(loadFailed){ showLoadError(); return; }
+    syncSearchClear(); content.removeAttribute("aria-busy");
     var y=window.scrollY, want=PAGE[ui.view];
     if(keep&&view.rendered>want) want=view.rendered;
     if(timelineObserver){timelineObserver.disconnect();nearbyCards.clear();}
@@ -1226,7 +1281,7 @@ var SEED = [{"id":"1","tags":["biography","audiobooks"],"cover":"covers/cover_1.
   var compact=false, ticking=false;
   function onScroll(){
     if(ticking) return; ticking=true;
-    requestAnimationFrame(function(){ ticking=false; updateTimeline();var c=window.scrollY>56; if(c!==compact){ compact=c; notch.classList.toggle("compact",c); } fill(); });
+    requestAnimationFrame(function(){ ticking=false; updateTimeline();var tt=window.scrollY>window.innerHeight*2; if(toTop.hidden===tt) toTop.hidden=!tt; var c=window.scrollY>56; if(c!==compact){ compact=c; notch.classList.toggle("compact",c); } fill(); });
   }
   function setNotchMetric(key,value){var style=document.documentElement.style;if(style.getPropertyValue(key)!==value)style.setProperty(key,value);}
   function measureNotch(){
@@ -1241,7 +1296,7 @@ var SEED = [{"id":"1","tags":["biography","audiobooks"],"cover":"covers/cover_1.
 
   // ---------- toast (drops from the notch) ----------
   var toastTimer=null;
-  function toast(msg){ var t=$("toast"); t.textContent=msg; t.classList.add("show"); if(toastTimer)clearTimeout(toastTimer); toastTimer=setTimeout(function(){t.classList.remove("show");},2400); }
+  function toast(msg,ms){ var t=$("toast"); t.textContent=msg; t.classList.add("show"); if(toastTimer)clearTimeout(toastTimer); toastTimer=setTimeout(function(){t.classList.remove("show");},ms||2400); }
 
   // ---------- book drawer ----------
   var drawer=$("drawer"), dBody=$("dBody"), dBook=null, dReturnId=null, dViewDirty=false;
@@ -1271,7 +1326,7 @@ var SEED = [{"id":"1","tags":["biography","audiobooks"],"cover":"covers/cover_1.
   function renderDrawer(){
     var b=dBook; if(!b) return;
     drawer.style.setProperty("--tone","var(--t-"+(STATUSES.indexOf(b.read_status)>=0?b.read_status:"unknown")+")");
-    $("dCradle").innerHTML='<span class="d-cv">'+(b.cover?'<img class="cv-img d-cover" src="'+esc(b.cover)+'" alt="Cover of '+esc(b.title||"this book")+'">':placeholderHTML(b))+'</span>';
+    $("dCradle").innerHTML='<span class="d-cv">'+(b.cover?'<img class="cv-img d-cover" src="'+esc(webCover(b.cover))+'" data-full="'+esc(b.cover)+'" alt="Cover of '+esc(b.title||"this book")+'">':placeholderHTML(b))+'</span>';
     markLoaded($("dCradle"));
     var parts=splitTitle(b.title), sub=(b.subtitle&&fold(b.title).indexOf(fold(b.subtitle))<0)?b.subtitle:"";
     var fmt=[b.format,b.pages?b.pages+" pages":""].filter(Boolean).join(", "), desc=plainText(b.description), long=desc.length>520;
@@ -1298,15 +1353,21 @@ var SEED = [{"id":"1","tags":["biography","audiobooks"],"cover":"covers/cover_1.
       '<button type="button" class="d-remove" data-act="remove">Remove from library</button>';
     dBody.innerHTML=h;
     lockPublicControls(dBody);if(publicView()&&!b.notes){var notesSection=$('dNotes').closest('.d-sec');if(notesSection)notesSection.hidden=true;}
+    if(publicView()){Array.prototype.forEach.call(dBody.querySelectorAll('.facts dd.ed'),function(dd){var input=dd.querySelector('input.in');if(input&&!input.value){var dt=dd.previousElementSibling;if(dt&&dt.tagName==='DT')dt.remove();dd.remove();}});var facts=dBody.querySelector('dl.facts');if(facts&&!facts.children.length)facts.remove();}
     autoGrow($("dTitleIn")); autoGrow($("dNotes"));
     var i=view.list.indexOf(b);
     $("dPrev").disabled=i<=0; $("dNext").disabled=i<0||i>=view.list.length-1;
   }
-  function openDrawer(id,focusTitle){
+  var drawerPushed=false;
+  function bookHash(id){ return "#book/"+encodeURIComponent(id); }
+  function hashBookId(){ var m=/^#book\/(.+)$/.exec(location.hash); if(!m) return null; try{ return decodeURIComponent(m[1]); }catch(e){ return null; } }
+  function openDrawer(id,focusTitle,fromHistory){
     var b=findBook(id); if(!b) return;
     closePops(); dBook=b; dReturnId=id;
-    if(!drawer.open){ drawer.showModal(); renderDrawer(); void drawer.offsetWidth; drawer.classList.add("open"); }
-    else renderDrawer();
+    if(!drawer.open){
+      drawer.showModal(); renderDrawer(); void drawer.offsetWidth; drawer.classList.add("open");
+      if(fromHistory===true) drawerPushed=true; else if(fromHistory!=="initial"){ try{ history.pushState({book:id},"",bookHash(id)); drawerPushed=true; }catch(e){} }
+    } else { renderDrawer(); try{ history.replaceState({book:id},"",bookHash(id)); }catch(e){} }
     $("dScroll").scrollTop=0;
     if(focusTitle) $("dTitleIn").focus(); else $("dClose").focus();
   }
@@ -1314,9 +1375,17 @@ var SEED = [{"id":"1","tags":["biography","audiobooks"],"cover":"covers/cover_1.
     var i=dBook?view.list.indexOf(dBook):-1; if(i<0) return;
     var nb=view.list[i+d]; if(!nb) return;
     dBook=nb; dReturnId=nb.id; renderDrawer(); $("dScroll").scrollTop=0;
+    try{ history.replaceState({book:nb.id},"",bookHash(nb.id)); }catch(e){}
   }
+  // Closing from the page goes back one history step (so the Back button and the close button agree); popstate does the closing.
   function closeDrawer(){
     if(!drawer.open) return;
+    if(drawerPushed){ drawerPushed=false; try{ history.back(); setTimeout(function(){ if(drawer.open) closeDrawerView(); },700); return; }catch(e){} }
+    closeDrawerView();
+  }
+  function closeDrawerView(){
+    if(!drawer.open) return;
+    if(hashBookId()!==null){ try{ history.replaceState(null,"",location.pathname+location.search); }catch(e){} }
     if(document.activeElement&&dBody.contains(document.activeElement)) document.activeElement.blur();
     drawer.classList.remove("open");
     var done=false;
@@ -1325,6 +1394,13 @@ var SEED = [{"id":"1","tags":["biography","audiobooks"],"cover":"covers/cover_1.
     drawer.addEventListener("transitionend",function h(e){ if(e.target===drawer){ drawer.removeEventListener("transitionend",h); finish(); } });
     setTimeout(finish,450);
   }
+  window.addEventListener("popstate",function(){
+    var id=hashBookId();
+    if(id===null){ drawerPushed=false; if(drawer.open) closeDrawerView(); return; }
+    var b=findBook(id); if(!b) return;
+    if(drawer.open){ dBook=b; dReturnId=b.id; renderDrawer(); $("dScroll").scrollTop=0; }
+    else openDrawer(id,false,true);
+  });
   function afterDrawerClose(){
     var id=dReturnId; dBook=null; dBody.innerHTML="";
     if(dViewDirty){ dViewDirty=false; renderView(true); }
@@ -1455,7 +1531,8 @@ var SEED = [{"id":"1","tags":["biography","audiobooks"],"cover":"covers/cover_1.
   });
   $("emptyAction").addEventListener("click",function(){ if(state.books.length===0) addBook(); else clearSearchAndFilters(true); });
   var searchTimer=null;
-  $("search").addEventListener("input",function(){ if(searchTimer)clearTimeout(searchTimer); searchTimer=setTimeout(function(){ renderView(false); },140); });
+  $("search").addEventListener("input",function(){ syncSearchClear(); if(searchTimer)clearTimeout(searchTimer); searchTimer=setTimeout(function(){ renderView(false); },140); });
+  $("searchClear").addEventListener("click",function(){ $("search").value=""; if(searchTimer)clearTimeout(searchTimer); renderView(false); $("search").focus(); });
   $("add").addEventListener("click",addBook);
   $("menuBtn").addEventListener("click",function(){ togglePop("menuBtn","menuPop"); });
   $("filtersBtn").addEventListener("click",function(){ togglePop("filtersBtn","filtersPop"); });
@@ -1527,6 +1604,8 @@ var SEED = [{"id":"1","tags":["biography","audiobooks"],"cover":"covers/cover_1.
   dateRail.addEventListener('change',function(e){if(e.target.matches('.mobile-month'))jumpToReadingMonth(e.target.value);});
 
   if(window.CLOUD_LIBRARY){
+    // The embedded built-in copy is an old snapshot (and is not even sent to the hosted page), so "Restore built-in library" must not exist here.
+    $('resetBtn').hidden=true;$('provenance').hidden=true;
     var accessButton=$('adminAccess');accessButton.hidden=false;accessButton.href=window.CLOUD_CAN_EDIT?'/logout':'/login';
     accessButton.setAttribute('aria-label',window.CLOUD_CAN_EDIT?'Sign out of admin':'Admin login');accessButton.title=accessButton.getAttribute('aria-label');
     if(window.CLOUD_CAN_EDIT){var signout=document.createElement('a');signout.className='m-item';signout.href='/logout';signout.textContent='Sign out';$('menuPop').prepend(signout);$('menuBtn').setAttribute('aria-label','Admin tools');$('menuBtn').title='Admin tools';}
@@ -1546,15 +1625,31 @@ var SEED = [{"id":"1","tags":["biography","audiobooks"],"cover":"covers/cover_1.
     reindex(); buildFilters(); syncViewSwitch(); applyTheme(); renderColumnPicker(); renderAll(); measureNotch();
     $("provenance").textContent="Built-in library: "+countBooks(SEED?SEED.length:0)+".";
   }
+  var toTop=$("toTop");
+  toTop.addEventListener("click",function(){ window.scrollTo({top:0,behavior:(REDUCED&&REDUCED.matches)?"auto":"smooth"}); });
+  function showLoadError(){
+    loadFailed=true; content.hidden=false; $("empty").hidden=true; $("loadmore").hidden=true; content.removeAttribute("aria-busy");
+    content.innerHTML='<div class="empty-state"><h2>The library did not load</h2><p>Check your connection, then try again.</p><button type="button" id="retryLoad">Try again</button></div>';
+    $("retryLoad").addEventListener("click",function(){ loadFailed=false; content.setAttribute("aria-busy","true"); content.innerHTML='<div class="boot-grid" role="status" aria-label="Loading the library">'+new Array(13).join('<span class="boot-card"></span>')+'</div>'; loadLibrary(); });
+  }
+  // Source of truth is the stored library served as books.json (revalidated, so an unchanged library costs a 304).
+  // The hosted page never falls back to an old embedded copy: it says the load failed instead.
+  function loadLibrary(){
+    fetch("books.json",{cache:"no-cache"}).then(function(r){ if(!r.ok) throw new Error("HTTP "+r.status); serverRevision=r.headers.get("X-Library-Revision"); return r.json(); })
+      .then(function(d){ var books=Array.isArray(d)?d:(d&&d.books); if(Array.isArray(books)){ state.books=books.map(normalize); if(d&&typeof d.title==="string") state.title=d.title; } else if(window.CLOUD_LIBRARY){ throw new Error("Unexpected library format"); } else { seedFromBuiltin(); } return true; })
+      .catch(function(){ if(window.CLOUD_LIBRARY) return false; if(!loadLocal()) seedFromBuiltin(); return true; })
+      .then(function(ok){ if(ok){ loadFailed=false; bootRender(); openLinkedBook(); } else showLoadError(); });
+  }
+  function openLinkedBook(){ var id=hashBookId(); if(id!==null&&findBook(id)) openDrawer(id,false,"initial"); }
+  // Do not lose edits: flush a pending save when the page is hidden, and warn before leaving with an unsaved or failed save.
+  document.addEventListener("visibilitychange",function(){ if(document.visibilityState==="hidden"&&saveTimer&&!publicView()){ clearTimeout(saveTimer); saveTimer=null; saveNow(); } });
+  window.addEventListener("beforeunload",function(e){ if(SERVER_MODE&&!publicView()&&(saveTimer||serverSaveState==="saving"||serverSaveState==="error")){ e.preventDefault(); e.returnValue=""; } });
   applyTheme(); syncViewSwitch(); measureNotch();
   if(SERVER_MODE){
     // The library name is a browser-only label (books.json is a bare array), so reuse the saved one.
     try{ var savedLocal=JSON.parse(localStorage.getItem(STORAGE_KEY)||"null"); if(savedLocal&&typeof savedLocal.title==="string") state.title=savedLocal.title; }catch(e){}
     // Source of truth is the on-disk books.json served by the launcher.
-    fetch("books.json",{cache:"no-store"}).then(function(r){ if(!r.ok) throw new Error("HTTP "+r.status); serverRevision=r.headers.get("X-Library-Revision"); return r.json(); })
-      .then(function(d){ var books=Array.isArray(d)?d:(d&&d.books); if(Array.isArray(books)){ state.books=books.map(normalize); if(d&&typeof d.title==="string") state.title=d.title; } else { seedFromBuiltin(); } })
-      .catch(function(){ if(!loadLocal()) seedFromBuiltin(); })
-      .then(function(){ bootRender(); });
+    loadLibrary();
   } else {
     var had=loadLocal();
     if(!had){ seedFromBuiltin(); }
