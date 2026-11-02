@@ -101,6 +101,8 @@ For future enrichment, follow `_build/metadata_enrichment/README.md` and its cam
 
 ## Interface decisions
 
+- Header links,2November2026: GitHub mark links to the public repository in a new tab; appearance and sign-in-arrow icons sit beside it. Admin access no longer uses a password-lock symbol. Phone/tablet layouts put brand/actions above search/view controls to retain usable space. Keep descriptive accessible labels/tooltips and safe external-link attributes.
+
 - Favicon,2November2026: `favicon.svg`, `favicon.ico` and `apple-touch-icon.png` reuse the existing three-book brand mark. Keep assets in both the Docker COPY list and the server’s narrow route allowlist, with correct image MIME types. A route alone is insufficient if the packaged file is absent.
 
 - **Cover hover, 1 November 2026:** fine-pointer hover adds a restrained sage rim/glow, 3px cover lift and 1.2% scale over 240ms. Text/stars stay fixed; list/table covers use a smaller response. Keyboard focus receives the same quiet glow. Touch devices avoid sticky hover, and reduced-motion settings disable transforms. CSS only; no pointer-tracking or scrolling work. Exact pre-change code and receipt: `_build/hosted_library_20261101/before-cover-hover-index.html` and `cover-hover-release.json`.

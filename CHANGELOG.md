@@ -1,5 +1,7 @@
 # Tiago’s Library — changelog
 
+**2November2026 — GitHub/sign-in controls:** added the GitHub mark beside appearance/admin controls, linking to the public repository in a new tab. Replaced the password-lock graphic with a sign-in arrow/door icon. Split compact headers into brand/actions and search/layout rows to avoid squeezing the new controls. Labels/tooltips and external-link safety retained; data/authentication unchanged.
+
 **2November2026 — favicon:** reused the existing sage/gold/lavender three-book logo on a dark rounded tile. Added SVG favicon,16/32/48px ICO fallback and180px Apple touch icon; explicitly allowed these asset routes with matching MIME types. No library data changed.
 
 **2November2026 — public repository:** changed tiagovasc/book-library from private to public at the user’s request and linked tiagobooks.com as its homepage. Before publication, scanned all30 commits/76 non-image blobs (about39.6MB), checked actual library credential values plus common secret patterns, verified internal tooling/credential/backup files were excluded and confirmed main was the only remote branch/tag. No credential matches found. Verified anonymous GitHub access; application data/authentication unchanged. Evidence: `_build/public_repo_20261102/audit.json` and `published.json`.
