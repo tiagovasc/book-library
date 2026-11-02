@@ -62,7 +62,7 @@ export const server=http.createServer(async(req,res)=>{
     let filename=url.pathname==='/'?'index.html':url.pathname.slice(1);
     if(!(filename==='index.html'||/^covers\/[a-zA-Z0-9_.-]+\.(jpg|png|webp|jpeg)$/.test(filename)))return send(res,404,{error:'Not found'});
     let raw=await readFile(path.join(root,filename));
-    if(filename==='index.html')raw=Buffer.from(raw.toString().replace('<head>',`<head><script>window.CLOUD_LIBRARY=true;window.CLOUD_CAN_EDIT=${authenticated(req)};</script>`));
+    if(filename==='index.html')raw=Buffer.from(raw.toString().replace('<head>',`<head><script>window.CLOUD_LIBRARY=true;window.CLOUD_CAN_EDIT=${authenticated(req)};if(!window.CLOUD_CAN_EDIT)document.documentElement.classList.add('public-library');</script>`));
     res.writeHead(200,{'Content-Type':filename.endsWith('.html')?'text/html; charset=utf-8':filename.endsWith('.png')?'image/png':filename.endsWith('.webp')?'image/webp':'image/jpeg','X-Content-Type-Options':'nosniff','Cache-Control':filename==='index.html'?'no-cache':'public, max-age=86400'});res.end(req.method==='HEAD'?undefined:raw);
   }catch(error){console.error('Request failed:',error.message);send(res,503,{error:'Library storage unavailable. Your changes remain in this browser.'});}
 });

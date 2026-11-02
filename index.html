@@ -432,6 +432,15 @@ body.has-timeline .wrap{margin-left:250px;width:calc(100% - 290px);max-width:136
 .tile .t-meta{min-height:1.3em;flex-shrink:0}
 .tile .card-rating{height:26px;flex-shrink:0}
 .mobile-month{display:none}
+.header-actions{display:flex;align-items:center;gap:6px}
+.header-actions a{text-decoration:none}
+.public-library #menuBtn,.public-library #menuPop,.public-library #add{display:none!important}
+.public-library .lib-title{cursor:default}
+.public-library .stars button{pointer-events:none}
+.public-library .edit:focus,.public-library .in:focus{background:transparent;box-shadow:none}
+.public-library .d-remove,.public-library .delbtn,.public-library [data-act="today"],.public-library .d-record{display:none}
+.public-library .dseg button:not([aria-pressed="true"]){display:none}
+.public-library .dseg button,.public-library .own,.public-library select.status{cursor:default;opacity:1}
 /* Phone browsing: full-width shelves, reachable controls and a quiet date dock. */
 @media(max-width:760px){
   html{scroll-padding-top:0}
@@ -443,6 +452,8 @@ body.has-timeline .wrap{margin-left:250px;width:calc(100% - 290px);max-width:136
   .seg.views button span,.kbd{display:none}
   .seg.views button{width:36px;height:44px;padding:0;justify-content:center}
   .round{width:44px;height:44px}
+  .header-actions{gap:2px}.header-actions .round{width:36px;height:44px}
+  .seg.views button{width:30px}
   .notch.compact .n-more{grid-template-rows:1fr}
   .n-row2{flex-wrap:wrap;gap:8px;padding-top:10px}
   .statusbar{order:-1;flex:1 1 100%;max-width:100%;overscroll-behavior-x:contain}
@@ -505,7 +516,11 @@ body.has-timeline .wrap{margin-left:250px;width:calc(100% - 290px);max-width:136
       <button type="button" data-view="list" aria-pressed="false" title="List (2)"><svg class="i" aria-hidden="true"><use href="#i-list"/></svg><span>List</span></button>
       <button type="button" data-view="table" aria-pressed="false" title="Table (3)"><svg class="i" aria-hidden="true"><use href="#i-table"/></svg><span>Table</span></button>
     </div>
+    <div class="header-actions" aria-label="Appearance and administration">
+      <button class="round" id="appearanceBtn" type="button" aria-label="Switch appearance" title="Switch appearance"><svg class="i" aria-hidden="true" viewBox="0 0 20 20"><circle cx="10" cy="10" r="4"/><path d="M10 1v2m0 14v2M1 10h2m14 0h2M3.6 3.6L5 5m10 10 1.4 1.4M3.6 16.4L5 15m10-10 1.4-1.4"/></svg></button>
+      <a class="round" id="adminAccess" href="/login" aria-label="Admin login" title="Admin login" hidden><svg class="i" aria-hidden="true" viewBox="0 0 20 20"><rect x="4" y="9" width="12" height="9" rx="2"/><path d="M6.5 9V6a3.5 3.5 0 0 1 7 0v3"/></svg></a>
     <button class="round" id="menuBtn" type="button" aria-haspopup="true" aria-expanded="false" aria-controls="menuPop" aria-label="Library menu and saving"><svg class="i" aria-hidden="true"><use href="#i-more"/></svg><span class="save-dot" id="dot"></span></button>
+    </div>
   </div>
   <div class="n-more" id="notchMore">
     <div class="n-more-inner">
@@ -887,8 +902,8 @@ var SEED = [{"id":"1","tags":["biography","audiobooks"],"cover":"covers/cover_1.
   var NONE_LABEL={dateread:"No reading date",dateread_asc:"No reading date",author:"No author",year:"No publication year",year_asc:"No publication year",rating:"Unrated",subject:"No subject"};
   function groupLabel(k){
     if(k==="~purchases")return {text:"Purchased books"};
-    if(k==="~earlier")return {text:"Earlier books · ordered by Goodreads date added"};
-    if(k==="~acquisition_unknown")return {text:"Acquisition order unknown"};
+    if(k==="~earlier")return {text:publicView()?"Earlier books":"Earlier books · ordered by Goodreads date added"};
+    if(k==="~acquisition_unknown")return {text:publicView()?"More unread books":"Acquisition order unknown"};
     if(/^\d{4}-\d{2}$/.test(k)) return {text:monthName(k)};
     if(k==="~none") return {text:NONE_LABEL[ui.sort]||"Other"};
     if(k==="~old") return {text:"Before 1900"};
@@ -907,7 +922,7 @@ var SEED = [{"id":"1","tags":["biography","audiobooks"],"cover":"covers/cover_1.
   // Every cover box is 2:3. Scale each cover to the largest size that fits the box at its own
   // proportions (small thumbnails grow, wide covers stay wide), standing on the box's bottom edge.
   function fitCover(img){ var w=img.naturalWidth, h=img.naturalHeight; if(w&&h) img.style.width=Math.min(100,150*w/h).toFixed(2)+"%"; img.classList.add("ok"); }
-  function markLoaded(root){ Array.prototype.forEach.call(root.querySelectorAll("img.cv-img:not(.ok)"),function(img){ if(img.complete&&img.naturalWidth) fitCover(img); }); }
+  function markLoaded(root){ lockPublicControls(root); Array.prototype.forEach.call(root.querySelectorAll("img.cv-img:not(.ok)"),function(img){ if(img.complete&&img.naturalWidth) fitCover(img); }); }
   function onImgLoad(e){ if(e.target.tagName==="IMG"&&e.target.classList.contains("cv-img")) fitCover(e.target); }
   function onImgError(e){
     var t=e.target; if(t.tagName!=="IMG") return;
@@ -917,6 +932,7 @@ var SEED = [{"id":"1","tags":["biography","audiobooks"],"cover":"covers/cover_1.
 
   // ---------- covers and list renderers ----------
   function readHTML(b,shortDate){
+    if(acquisitionSort()&&publicView())return '<span class="t-state">'+esc(LABEL[b.read_status]||'Unread')+'</span>';
     if(acquisitionSort())return '<span class="t-state" title="'+esc(acquisitionInfo(b))+'">'+esc(b.acquisition_basis==="user_recent"?"~ Oct 2026":b.acquisition_basis==="goodreads_added"?"GR "+fmtDate(b.goodreads_date_added,true):b.acquisition_basis==="purchase_log"?"Purchase log":"Order unknown")+'</span>';
     if(b.date_read) return '<span class="t-read" title="Read '+esc(fmtDate(b.date_read,true))+'"><svg class="i-xs" aria-hidden="true"><use href="#i-check"/></svg>'+esc(fmtDate(b.date_read,!shortDate))+'</span>';
     if(b.read_status==="reading"||b.read_status==="next"||b.read_status==="paused") return '<span class="t-state s-'+b.read_status+'">'+LABEL[b.read_status]+'</span>';
@@ -1111,10 +1127,23 @@ var SEED = [{"id":"1","tags":["biography","audiobooks"],"cover":"covers/cover_1.
     Array.prototype.forEach.call($("viewSwitch").querySelectorAll("button"),function(btn){ btn.setAttribute("aria-pressed",String(btn.getAttribute("data-view")===ui.view)); });
     $("columnsBtn").hidden=ui.view!=="table";
   }
+  function publicView(){return !!window.CLOUD_LIBRARY&&!window.CLOUD_CAN_EDIT;}
+  function lockPublicControls(root){
+    if(!publicView())return;
+    root.querySelectorAll('[contenteditable="true"]').forEach(function(el){el.contentEditable='false';});
+    root.querySelectorAll('input[data-f],textarea[data-f]').forEach(function(el){el.readOnly=true;});
+    root.querySelectorAll('.stars button,.own,.delbtn,select.status,#dOwned,[data-set-status]').forEach(function(el){el.disabled=true;});
+    root.querySelectorAll('.stars[aria-label^="Your rating"]').forEach(function(el){el.setAttribute('aria-label',el.getAttribute('aria-label').replace('Your rating','Tiago’s rating'));});
+  }
   function applyTheme(){
     var r=document.documentElement;
     if(ui.theme==="light"||ui.theme==="dark") r.setAttribute("data-theme",ui.theme); else r.removeAttribute("data-theme");
     Array.prototype.forEach.call($("themeSwitch").querySelectorAll("button"),function(b){ b.setAttribute("aria-pressed",String(b.getAttribute("data-theme")===ui.theme)); });
+    var dark=ui.theme==='dark'||(ui.theme==='auto'&&matchMedia('(prefers-color-scheme: dark)').matches);
+    var next=dark?'light':'dark',button=$('appearanceBtn');
+    button.setAttribute('aria-label','Switch to '+next+' mode');button.title='Switch to '+next+' mode';
+    button.innerHTML=dark?'<svg class="i" aria-hidden="true" viewBox="0 0 20 20"><circle cx="10" cy="10" r="4"/><path d="M10 1v2m0 14v2M1 10h2m14 0h2M3.6 3.6L5 5m10 10 1.4 1.4M3.6 16.4L5 15m10-10 1.4-1.4"/></svg>':'<svg class="i" aria-hidden="true" viewBox="0 0 20 20"><path d="M17 12.5A7.5 7.5 0 0 1 7.5 3a7.5 7.5 0 1 0 9.5 9.5Z"/></svg>';
+
   }
   function renderFileStatus(){
     var cls="", txt="", hint="", connect=$("connect");
@@ -1140,7 +1169,7 @@ var SEED = [{"id":"1","tags":["biography","audiobooks"],"cover":"covers/cover_1.
     }
     if(window.CLOUD_LIBRARY){
       txt=window.CLOUD_CAN_EDIT?(serverSaveState==='saving'?'Saving…':serverSaveState==='error'?'Save failed — changes kept in this browser':serverSaveState==='saved'?'Saved to library':'Editing enabled'):'Public view · Editing locked';
-      hint=window.CLOUD_CAN_EDIT?'Changes are saved online. Use Lock editing in this menu when finished.':'Browse freely. Choose Enable editing to enter the library password.';
+      hint=window.CLOUD_CAN_EDIT?'Changes are saved online. Use Sign out when finished.':'Browse freely. Choose Enable editing to enter the library password.';
     }
     $("dot").className="save-dot"+(cls?" "+cls:""); $("dot2").className="dot"+(cls?" "+cls:"");
     $("fileStatusText").textContent=txt; $("fileHint").textContent=hint;
@@ -1234,6 +1263,7 @@ var SEED = [{"id":"1","tags":["biography","audiobooks"],"cover":"covers/cover_1.
       '<details class="d-record"><summary>Record details</summary><dl class="facts">'+recordHTML(b)+'</dl></details>'+
       '<button type="button" class="d-remove" data-act="remove">Remove from library</button>';
     dBody.innerHTML=h;
+    lockPublicControls(dBody);if(publicView()&&!b.notes){var notesSection=$('dNotes').closest('.d-sec');if(notesSection)notesSection.hidden=true;}
     autoGrow($("dTitleIn")); autoGrow($("dNotes"));
     var i=view.list.indexOf(b);
     $("dPrev").disabled=i<=0; $("dNext").disabled=i<0||i>=view.list.length-1;
@@ -1389,6 +1419,8 @@ var SEED = [{"id":"1","tags":["biography","audiobooks"],"cover":"covers/cover_1.
   $("filtersBtn").addEventListener("click",function(){ togglePop("filtersBtn","filtersPop"); });
   $("columnsBtn").addEventListener("click",function(){ togglePop("columnsBtn","columnsPop"); });
   document.addEventListener("click",function(e){ if(!anyPopOpen()) return; if(e.target.closest(".pop")||e.target.closest("#menuBtn,#filtersBtn,#columnsBtn")) return; closePops(); });
+  $('appearanceBtn').addEventListener('click',function(){var dark=ui.theme==='dark'||(ui.theme==='auto'&&matchMedia('(prefers-color-scheme: dark)').matches);ui.theme=dark?'light':'dark';saveUI();applyTheme();});
+  matchMedia('(prefers-color-scheme: dark)').addEventListener('change',function(){if(ui.theme==='auto')applyTheme();});
   $("themeSwitch").addEventListener("click",function(e){ var b=e.target.closest("button[data-theme]"); if(!b) return; ui.theme=b.getAttribute("data-theme"); saveUI(); applyTheme(); });
   $("columnOptions").addEventListener("change",function(e){var key=e.target.getAttribute("data-column");if(!key)return;var next=visibleColumns.filter(function(k){return k!==key;});if(e.target.checked)next.push(key);if(!next.length){e.target.checked=true;toast("Keep at least one column visible");return;}visibleColumns=next;saveColumns();});
   $("allColumns").addEventListener("click",function(){visibleColumns=COLUMNS.map(function(c){return c[0];});saveColumns();});
@@ -1409,7 +1441,7 @@ var SEED = [{"id":"1","tags":["biography","audiobooks"],"cover":"covers/cover_1.
   libTitle.addEventListener("paste",function(e){ e.preventDefault(); document.execCommand("insertText",false,(e.clipboardData||window.clipboardData).getData("text/plain").replace(/\s+/g," ")); });
   document.addEventListener("keydown",function(e){
     var k=e.key, t=e.target, typing=!!t&&(t.isContentEditable||/^(INPUT|TEXTAREA|SELECT)$/.test(t.tagName));
-    if((e.ctrlKey||e.metaKey)&&k&&k.toLowerCase()==="s"){ e.preventDefault(); saveNow(); toast(SERVER_MODE?"Saved to books.json":(fileHandle&&filePermission?("Saved to "+fileHandle.name):"Saved in this browser")); return; }
+    if((e.ctrlKey||e.metaKey)&&k&&k.toLowerCase()==="s"){ if(publicView())return;e.preventDefault(); saveNow(); toast(SERVER_MODE?"Saved to books.json":(fileHandle&&filePermission?("Saved to "+fileHandle.name):"Saved in this browser")); return; }
     if(e.ctrlKey||e.metaKey||e.altKey) return;
     if(drawer.open){ if(!typing&&(k==="ArrowLeft"||k==="ArrowRight")){ e.preventDefault(); stepDrawer(k==="ArrowLeft"?-1:1); } return; }
     if(k==="Escape"){ if(anyPopOpen()){ closePops(); return; } if(t&&t.id==="search"&&t.value){ t.value=""; renderView(false); } return; }
@@ -1453,12 +1485,17 @@ var SEED = [{"id":"1","tags":["biography","audiobooks"],"cover":"covers/cover_1.
   dateRail.addEventListener('change',function(e){if(e.target.matches('.mobile-month'))jumpToReadingMonth(e.target.value);});
 
   if(window.CLOUD_LIBRARY){
-    var accessButton=document.createElement('a');accessButton.className='m-item';accessButton.href=window.CLOUD_CAN_EDIT?'/logout':'/login';accessButton.textContent=window.CLOUD_CAN_EDIT?'Lock editing':'Enable editing';$('menuPop').prepend(accessButton);
+    var accessButton=$('adminAccess');accessButton.hidden=false;accessButton.href=window.CLOUD_CAN_EDIT?'/logout':'/login';
+    accessButton.setAttribute('aria-label',window.CLOUD_CAN_EDIT?'Sign out of admin':'Admin login');accessButton.title=accessButton.getAttribute('aria-label');
+    if(window.CLOUD_CAN_EDIT){var signout=document.createElement('a');signout.className='m-item';signout.href='/logout';signout.textContent='Sign out';$('menuPop').prepend(signout);$('menuBtn').setAttribute('aria-label','Admin tools');$('menuBtn').title='Admin tools';}
+    document.documentElement.classList.toggle('public-library',publicView());
+    if(publicView()){lockPublicControls(document);$('libTitle').removeAttribute('title');$('menuBtn').hidden=true;$('enrichFilter').closest('label').hidden=true;}
+
     if(!window.CLOUD_CAN_EDIT){
       var editTargets='.stars button,#add,#importBtn,#resetBtn,[data-act="own"],[data-act="remove"],[data-act="today"],.edit,[data-f],#libTitle';
-      document.addEventListener('click',function(e){if(e.target.closest(editTargets)){e.preventDefault();e.stopImmediatePropagation();location.href='/login';}},true);
-      document.addEventListener('beforeinput',function(e){if(e.target.closest('.edit,[data-f],#libTitle')){e.preventDefault();e.stopImmediatePropagation();location.href='/login';}},true);
-      document.addEventListener('change',function(e){if(e.target.closest('.status,[data-f]')){e.preventDefault();e.stopImmediatePropagation();location.href='/login';}},true);
+      document.addEventListener('click',function(e){if(e.target.closest(editTargets)){e.preventDefault();e.stopImmediatePropagation();}},true);
+      document.addEventListener('beforeinput',function(e){if(e.target.closest('.edit,[data-f],#libTitle')){e.preventDefault();e.stopImmediatePropagation();}},true);
+      document.addEventListener('change',function(e){if(e.target.closest('.status,[data-f]')){e.preventDefault();e.stopImmediatePropagation();}},true);
     }
   }
 
