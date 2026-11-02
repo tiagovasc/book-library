@@ -101,7 +101,7 @@ For future enrichment, follow `_build/metadata_enrichment/README.md` and its cam
 
 ## Interface decisions
 
-- Favicon,2November2026: `favicon.svg`, `favicon.ico` and `apple-touch-icon.png` reuse the existing three-book brand mark. The server explicitly serves these files with image MIME types; preserve the narrow asset allowlist.
+- Favicon,2November2026: `favicon.svg`, `favicon.ico` and `apple-touch-icon.png` reuse the existing three-book brand mark. Keep assets in both the Docker COPY list and the server’s narrow route allowlist, with correct image MIME types. A route alone is insufficient if the packaged file is absent.
 
 - **Cover hover, 1 November 2026:** fine-pointer hover adds a restrained sage rim/glow, 3px cover lift and 1.2% scale over 240ms. Text/stars stay fixed; list/table covers use a smaller response. Keyboard focus receives the same quiet glow. Touch devices avoid sticky hover, and reduced-motion settings disable transforms. CSS only; no pointer-tracking or scrolling work. Exact pre-change code and receipt: `_build/hosted_library_20261101/before-cover-hover-index.html` and `cover-hover-release.json`.
 
