@@ -1,5 +1,7 @@
 # Tiago’s Library — current project guide
 
+**Production release confirmed,2November2026:** the staged MVP-to-production pass is now deployed (9d186ee). Include `covers/web/*.jpg` with releases and preserve original-image fallback; the hosted page strips embedded offline data and loads the authoritative API. Live compression/cache/security/login/asset checks passed;977books and revision38 unchanged. Twelve isolated server tests and save-preservation checks pass;38 browser checks were performed by the staging agent, not rerun as live browser measurements. Receipt/rollback: `_build/mvp_to_prod_deploy_20261102/`; earlier “not deployed” statements describe the staged checkpoint.
+
 **Production pass, 2 November 2026 (code ready, not deployed):** see the section at the end of this guide and `_build/mvp_to_prod_20261102/README.md`.
 
 **Repository visibility,2November2026:** https://github.com/tiagovasc/book-library is now **public**, following the user’s request. Scanned all30 pre-publication commits/76 non-image blobs for known library credentials and common secret patterns; no matches or internal credential/backup paths found. Verified public access without authentication. Continue publishing only the curated release; `_build/`, credentials and backups remain excluded. Internal evidence: `_build/public_repo_20261102/`.
