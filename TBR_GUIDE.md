@@ -1,5 +1,7 @@
 # TBR catalogue
 
+**Cover-quality follow-up,3November2026:** Bears, Rise and Fall and Italian Metafora now use better-resolution verified fronts. Preserve `cover-overrides.json` when regenerating the derived catalogue: raw enrichment evidence intentionally retains its original selected images. No identities, descriptions, sightings or dates changed. Full six-cover Library/TBR campaign and live verification: `_build/cover_replacements_under40_20261103/README.md`.
+
 Added 2 November 2026. Public route: `/?collection=tbr&source=bookshops`.
 
 The header switches between Library and TBR. TBR has **Instagram**, **Book shops** and **Online** sources; only Book shops is populated. The other two deliberately show empty states. “Online” is the public label for the future Amazon import.

@@ -10,3 +10,5 @@ Current project rules and duplicate policy: [PROJECT_GUIDE.md](PROJECT_GUIDE.md)
 ## TBR
 
 The Library/TBR switch opens three sources: Instagram, Book shops and Online. Only Book shops is populated for now:753 entries from819 photo records, newest photographs first, with city, bookshop and photo date. Search, city/shop filters, layouts and full visit histories are included. TBR is a separate read-only discovery catalogue; it does not change personal-library records or ratings. See [TBR_GUIDE.md](TBR_GUIDE.md).
+
+Cover-quality upgrades,3November2026: six covers below40 replaced with verified, sharper same-work fronts. Original assets preserved; `cover-overrides.json` records sources, hashes and old/new scores and must be honored in future catalogue rebuilds.

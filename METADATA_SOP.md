@@ -1,5 +1,9 @@
 # SOP — missing book metadata and covers
 
+**Quality-replacement lesson,3November2026:** publisher images and Open Library large ISBN fronts upgraded all six saved scores below40; Italian Metafora required a library-hosted image. Google returned the identical generic “image not available” JPEG for two unrelated books, despite its76/100 technical-quality score. Inspect the actual cover and reject placeholders regardless of sharpness score. Use new asset URLs to avoid day-long cover caches, publish assets before changing live references, and compare all non-cover fields against fresh revision-guarded state. Apply `cover-overrides.json` when rebuilding TBR so immutable raw enrichment evidence cannot regress verified replacements.
+
+**Cover-quality screening,2November2026:** use [COVER_QUALITY_REVIEW.md](COVER_QUALITY_REVIEW.md) and `_build/cover_quality_20261102/README.md` for the separate read-only image-quality audit. Every existing image is scored1–100 (higher better), including separate resolution/sharpness scores, image hash and all referring book IDs. The user explicitly requested a continuous ranking rather than choosing a cutoff now. Preserve all scores; any diagnostic bands are explanatory, not replacement authorization. Use original pixel dimensions and normalized edge/detail measurements, not DPI tags or a sole Laplacian threshold. Select the review score range with Tiago later, manually inspect, then research replacements. Retain originals, decisions and per-image evidence; the audit does not verify book identity/edition and must not automatically replace covers.
+
 **Publication boundary,2November2026:** the curated `tiagovasc/book-library` repository is now public. Earlier “private release” wording below is historical. Keep the same curated checkout, exclude credentials/internal tooling/backups, and inspect staged changes before each push. Internal `_build/` evidence stays local; do not publish it to satisfy a documentation link.
 
 **Bookshop first-20 trial,2November2026:** [_build/metadata_enrichment/bookshop20_20261102/REPORT.md](_build/metadata_enrichment/bookshop20_20261102/REPORT.md) records a separate post-JEV pilot:16 catalogue matches,14 manually accepted covers. Manual inspection rejected an interior Russell title page, a different same-title WWII book and a Spanish cover for Portuguese Cultura; a Reader's Edition was replaced by the closer Jung facsimile. Preserve available original public editor/imprint evidence in references for generic titles; a blank author alone can leave different same-title books indistinguishable. Treat catalogue publisher anomalies and zero page counts as unresolved, and keep catalogue-edition facts separate from photographed copies. No personal-library updates were made.
@@ -111,3 +115,41 @@ Same book/same author normally combines for this user even across editions/trans
 5. Read back hosted state exactly, check persistence and open representative live frontend records in the native browser. Verify actual images and visible text. Use isolated/no-op save tests; do not alter real ratings just to test. Distinguish image-file verification from live visual verification if the browser is blocked.
 6. Publish approved frontend/covers/docs through the curated private release checkout, not the outer workspace repository. Keep credentials, internal research and backups out. Verify Git publication and, when claiming deployment, actual Railway outcome/live assets separately. Do not reseed data during a UI/docs release.
 7. Update project guide, changelog and campaign report with date, counts, actual QA coverage, source/API failures, unresolved IDs/reasons, receipts, exact recovery paths and deployment status. Reopen docs and check links. Hand off: how many targets, fields/covers added, remaining gaps, user questions and limitations. Never claim all metadata or duplicates solved merely because a batch completed.
+
+
+## 2 November 2026: all 819 bookshop metadata records processed
+
+Completed the remaining 649 post-JEV single-book records (171-819): **550 catalogue matches, 478 accepted covers, 99 unresolved matches and 72 other cover gaps**. All 649 catalogue/JEV calls finished before corrections. One bounded retrieval pass; no repeated recovery searches.
+
+Across all four campaigns: **819 processed, 692 catalogue matches, 600 accepted covers, 127 unresolved matches and 92 metadata-only cover gaps**. These are photo records, including repeat photos of the same book; they are not a count of unique works.
+
+[Search all records](../Bookshop trips/Book-metadata.html) | [Complete CSV](../Bookshop trips/books-metadata.csv) | [Complete JSON](../Bookshop trips/books-metadata.json) | [127 unresolved matches](../Bookshop trips/metadata-needs-research.csv) | [92 cover gaps](../Bookshop trips/metadata-cover-gaps.csv) | [Campaign evidence](_build/metadata_enrichment/bookshop_remaining_20261102/README.md).
+
+All 475 JEV-selected actual images in the remaining campaign were visually inspected, plus 26 none-case image assets and seven alternative assets. Wrong-language, wrong-volume, audiobook, interior-page and placeholder assets were held or replaced using existing evidence. Six incompatible Open Library edition-detail responses were excluded from accepted bibliography; raw receipts remain. All 600 final cover hashes and image decodes, original-row equality, 819 unique photo IDs and report links passed verification. Sixty-six duplicate-similarity pairs were reviewed; separate photo records remain intact. Catalogue editions and cover artwork do not establish the exact edition photographed. Original source CSV unchanged; no personal-library or hosted changes.
+
+This completion supersedes earlier metadata in-progress/next-record notices without removing their history. **No unprocessed single-book rows remain in the frozen 819-row source.** Continue only from the explicit unresolved/cover-gap lists, with fresh authorization for further external research. Original extraction uncertainties (including the 23 extra extraction checks) remain separate and are not claimed resolved by catalogue enrichment. User reported weekly usage still 21% at campaign start; ending meter unavailable, no usage delta inferred.
+
+## Cover renditions, added 2 November 2026
+
+After adding, replacing or correcting any cover file, run `python _build/mvp_to_prod_20261102/make_web_covers.py` from the Dashboard folder so `covers/web/` has a current 640 px rendition, and include `covers/web/` in the published release. The page falls back to the original if a rendition is missing, which works but is slow on phones.
+
+
+## 2 November 2026: bookshop metadata recovery completed
+
+The user authorized further research on all127 unmatched books and92 existing cover gaps, using photographs. **125 of127 catalogue matches resolved;84 of92 existing cover gaps filled.** Another103 newly matched books gained covers:187 covers added in total. Current819-photo totals: **817 catalogue matches,787 covers,2 unmatched and30 matched without a compatible usable cover**. These are photo records, including repeated books, not unique-work counts.
+
+All219 target photographs were inspected. All219 initial and33 targeted follow-up JEV decisions finished before final corrections. Candidate/source identity and every accepted new actual front cover were manually reviewed. Wrong works, languages, numbered volumes, unavailable images, placeholders and promotional overlays were rejected or replaced. Original extraction values,819 photo IDs/order,600 existing covers and all600 untargeted records are preserved. Resolved title/author corrections are displayed alongside original extraction fields. Unknown catalogue edition facts remain blank; no exact photographed edition is claimed. No personal-library, hosted-data or deployment changes.
+
+Only two catalogue matches remain unconfirmed: record15, *Michelangelo* (Scripta Maneant; precise volume unclear), and record603, *Flux: The Story of Female Pleasure* (Kate Lister). The30 cover gaps are a separate list. Earlier in-progress/unresolved counts are historical and superseded by this completion; their evidence is retained.
+
+[Recovery evidence](_build/metadata_enrichment/bookshop_recovery_20261102/README.md)
+
+
+### Recovery lessons from the219 bookshop targets
+
+Use the original photo to resolve generic/truncated titles, author OCR and printed volume numbers before accepting a catalogue source. Keep immutable extraction values separate from resolved display fields. A JEV work choice and cover choice are independent leads; inspect the actual image, require a local asset and hash, and reject wrong-volume/wrong-language/related-book images even at high confidence. Network/output errors are not model rejections. Cache successful responses; retry only missing decisions after correcting image dimensions/request size. Report initial and follow-up bucket distributions separately because targets overlap and manual acceptance differs. For work-only recovery, retain authoritative source evidence and withhold unsupported edition facts. Do not run the personal-library cover-rendition/deployment pipeline for local bookshop staging artifacts.
+
+
+### 2 November 2026: Goodreads native-browser follow-up
+
+Found record603 by searching Kate Lister: the photographed title is **FLICK: The Story of Female Pleasure**, not Flux. Corrected resolved metadata and added a visually checked compatible cover; original extraction preserved. Goodreads catalogue edition facts are explicitly DIGITAL/Kindle and do not identify the photographed print edition. Michelangelo remains unresolved: Fabio Scaletti’s Slovenian Michelangelo, velikan: 500 let is an unconfirmed lead with different binding. Current totals: **819 photos,818 catalogue matches,788 covers,1 unmatched,30 matched without cover**. This supersedes the preceding two-unmatched counts. Source/old-new deltas, five immediate pre-follow-up exports and validation are retained as goodreads-* files in the recovery evidence folder. No personal-library or hosted edits.
