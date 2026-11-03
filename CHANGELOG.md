@@ -157,3 +157,6 @@ Found record603 by searching Kate Lister: the photographed title is **FLICK: The
 
 
 **2 November 2026 — TBR infinite scrolling:** the next48 books append automatically within1000px of the end in covers, list and table views. Existing cards/rows remain in place; visit groups continue across batch boundaries without duplicate headings. Filters/search reset the batch; loading stops at the final book. A Load more button remains as an accessible/manual fallback. Sixteen server/data tests pass; public/admin DOM checks exercised automatic48→96→753 loading, unique IDs and original-node preservation, plus navigation/filter/layout regressions.
+
+
+**3November2026 — below40 batch verified live:** assets/TBR release7da7741 succeeded; exact image bytes verified. Revision-guarded Library save96→97 changed only three cover fields. All six final fronts manually inspected after optimization. Full1673-image rescan: zero below40, minimum40; unreplaced-image scores unchanged. Current HTML/CSV/JSON linked from COVER_QUALITY_REVIEW.md. Local JSON/SEED mirrored only cover fields; CSV has no cover column and stays byte-identical.

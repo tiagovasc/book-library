@@ -20,7 +20,8 @@
       "new_score": 87,
       "image_url": "https://d28hgpri8am2if.cloudfront.net/book_images/onix/cvr9781423658795/bears-9781423658795_hr.jpg",
       "manual_verdict": "Accepted: actual front inspected against title, creators, language and catalogue evidence. All six visually inspected individually/contact sheet; Google placeholder rejected.",
-      "edition_note": "Same-work front; exact photographed edition not asserted."
+      "edition_note": "Same-work front; exact photographed edition not asserted.",
+      "source_page": "https://www.simonandschuster.com/books/Bears/Julie-Argyle/Wild-in-the-West/9781423658795"
     },
     {
       "scope": "Library",
@@ -41,7 +42,8 @@
       "new_score": 82,
       "image_url": "https://covers.openlibrary.org/b/isbn/9780500288955-L.jpg?default=false",
       "manual_verdict": "Accepted: actual front inspected against title, creators, language and catalogue evidence. All six visually inspected individually/contact sheet; Google placeholder rejected.",
-      "edition_note": "Same-work front; exact photographed edition not asserted."
+      "edition_note": "Same-work front; exact photographed edition not asserted.",
+      "source_page": "https://www.thamesandhudson.com/products/art-the-whole-story-1"
     },
     {
       "scope": "Library",
@@ -62,7 +64,8 @@
       "new_score": 85,
       "image_url": "https://covers.openlibrary.org/b/isbn/9780517119259-L.jpg?default=false",
       "manual_verdict": "Accepted: actual front inspected against title, creators, language and catalogue evidence. All six visually inspected individually/contact sheet; Google placeholder rejected.",
-      "edition_note": "Same-work front; exact photographed edition not asserted."
+      "edition_note": "Same-work front; exact photographed edition not asserted.",
+      "source_page": "https://www.thriftbooks.com/w/mc-escher-mini-masterpieces-the-miniature-masterpieces-series_mc-escher/897170/item/"
     },
     {
       "scope": "TBR",
@@ -83,7 +86,8 @@
       "new_score": 99,
       "image_url": "https://www.hodder.co.uk/wp-content/uploads/2019/04/hbg-title-rise-and-fall-2-9.jpg",
       "manual_verdict": "Accepted: actual front inspected against title, creators, language and catalogue evidence. All six visually inspected individually/contact sheet; Google placeholder rejected.",
-      "edition_note": "Same-work front; exact photographed edition not asserted."
+      "edition_note": "Same-work front; exact photographed edition not asserted.",
+      "source_page": "https://www.hodder.co.uk/titles/paul-strathern-3/rise-and-fall/9781473698642/"
     },
     {
       "scope": "Library",
@@ -104,7 +108,8 @@
       "new_score": 94,
       "image_url": "https://covers.openlibrary.org/b/isbn/9780072898675-L.jpg?default=false",
       "manual_verdict": "Accepted: actual front inspected against title, creators, language and catalogue evidence. All six visually inspected individually/contact sheet; Google placeholder rejected.",
-      "edition_note": "Second-edition same-work art; owned edition metadata unchanged."
+      "edition_note": "Second-edition same-work art; owned edition metadata unchanged.",
+      "source_page": "https://search.worldcat.org/title/41488878"
     },
     {
       "scope": "TBR",
@@ -125,7 +130,8 @@
       "new_score": 77,
       "image_url": "https://assets.culturabologna.it/3acbea42-c4b1-430f-9f41-ae2bad772095-metafora.jpg/658e92357ddaf83a37526e47323880e7e339b4c0.jpg",
       "manual_verdict": "Accepted: actual front inspected against title, creators, language and catalogue evidence. All six visually inspected individually/contact sheet; Google placeholder rejected.",
-      "edition_note": "Same-work front; exact photographed edition not asserted."
+      "edition_note": "Same-work front; exact photographed edition not asserted.",
+      "source_page": "https://www.bibliotecasalaborsa.it/ragazzi/lang/it/objects/metafora-la-storia-della-filosofia-in-24-immagini-8b7b34"
     }
   ]
 }
