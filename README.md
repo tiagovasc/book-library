@@ -1,14 +1,50 @@
 # Tiago's Library
 
-Browse the library at **[tiagobooks.com](https://tiagobooks.com)**. This repository is public as of2November2026; credentials and internal tooling remain excluded. Maintainer documents reference local `_build/` audit evidence that is intentionally not published here.
+A public book library with cover, list and table views, personal ratings, reading timelines, search and filters. The TBR catalogue groups reading interests by where they were discovered, including bookshop visits.
 
-Railway hosts the app and cover assets. Supabase's shared LLM Project Hub stores the live library. Ratings are personal Goodreads ratings and editable. The source checkout is Meaning/Books/Dashboard in the local workspace; this repository is its curated deployable release. Original data, backups and internal tooling are deliberately excluded. No credentials belong here.
+**[Visit tiagobooks.com](https://tiagobooks.com)**
 
+## Run locally
 
-Current project rules and duplicate policy: [PROJECT_GUIDE.md](PROJECT_GUIDE.md). Hosted Supabase state remains authoritative for online edits; embedded data is a fallback snapshot, never an automatic reseed.
+Requires Node.js 22 or newer and your own Supabase project. There are no production npm dependencies.
 
-## TBR
+1. Clone this repository.
+2. Copy `.env.example` to `.env` and fill in your own values. Keep `.env` untracked.
+3. Run `supabase.sql` in your project's SQL editor. It creates the storage table and an empty library without replacing existing data.
+4. Start the app:
 
-The Library/TBR switch opens three sources: Instagram, Book shops and Online. Only Book shops is populated for now:753 entries from819 photo records, newest photographs first, with city, bookshop and photo date. Search, city/shop filters, layouts and full visit histories are included. TBR is a separate read-only discovery catalogue; it does not change personal-library records or ratings. See [TBR_GUIDE.md](TBR_GUIDE.md).
+   ```sh
+   node --env-file=.env server.mjs
+   ```
 
-Cover-quality upgrades,3November2026: six covers below40 replaced with verified, sharper same-work fronts. Original assets preserved; `cover-overrides.json` records sources, hashes and old/new scores and must be honored in future catalogue rebuilds.
+5. Open `http://localhost:8732`. Sign in with the password you configured to add books or import a library through the admin tools.
+
+The hosted library loads from the backend; this source code contains no embedded personal-library snapshot. `tbr-bookshops.json` and its cover images are the public catalogue displayed on the website. They can be replaced with your own catalogue using the same schema.
+
+## Architecture
+
+| File | Purpose |
+|---|---|
+| `index.html` | Library interface, themes, timeline and editor |
+| `tbr.js`, `tbr.css` | TBR browsing, discovery filters and incremental scrolling |
+| `tbr-bookshops.json` | Public bookshop catalogue and visit information |
+| `server.mjs` | Node HTTP server, sessions, Supabase storage, caching and compression |
+| `covers/` | Cover assets and optimized browsing images |
+| `supabase.sql` | Storage schema and row-level access restrictions |
+| `Dockerfile`, `railway.json` | Container and hosting configuration |
+
+The backend keeps Supabase credentials on the server. Public visitors browse without an account; a password enables editing through a signed session cookie. Revision checks protect against concurrent edits.
+
+## Tests
+
+```sh
+npm test
+```
+
+Tests use isolated mock storage rather than a production database. They cover authentication, saving, caching, static routes, catalogue integrity and publication boundaries.
+
+## Deployment
+
+Build with the Dockerfile and configure the variables in `.env.example` on your host. Set `NODE_ENV=production` and serve behind HTTPS so admin cookies are secure. The `/health` route checks storage availability.
+
+See [CONTRIBUTING.md](CONTRIBUTING.md) for changes and checks, and [CHANGELOG.md](CHANGELOG.md) for public release notes.

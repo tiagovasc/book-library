@@ -1,4 +1,14 @@
 .env
 .env.*
+!.env.example
 node_modules/
 _build/
+internal/
+private/
+PROJECT_GUIDE.md
+METADATA_SOP.md
+DOMAIN_SETUP.md
+TBR_GUIDE.md
+cover-overrides.json
+books.json
+books.csv

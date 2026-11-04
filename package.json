@@ -1,1 +1,13 @@
-{"name":"tiago-book-library","version":"1.0.0","private":true,"type":"module","engines":{"node":">=22"},"scripts":{"start":"node server.mjs","test":"node --test test-server.mjs test-server-prod.mjs test-tbr.mjs"}}
+{
+  "name": "tiago-book-library",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "start": "node server.mjs",
+    "test": "node --test test-server.mjs test-server-prod.mjs test-tbr.mjs test-public-boundary.mjs"
+  }
+}
